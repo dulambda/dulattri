@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Мир Квизззов</title>
-    <meta name="viewport" content="width=1920, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
             width: 100%;
-            height: 2930px;
+            min-height: 100vh;
             background: #C7F9CC; /* pastel green */
-            color: #222; /* dark for contrast */
+            color: #222;
             font-family: Arial, sans-serif;
             opacity: 1;
         }
         .header {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 40px 80px 20px 80px;
+            padding: 32px 5vw 16px 5vw;
         }
         .site-name {
             font-size: 4rem;
@@ -26,22 +27,25 @@
             letter-spacing: 4px;
             color: #7EC8E3;
             background: linear-gradient(90deg, #43EA6E 0%, #3B82F6 50%, #F472B6 100%);
-            padding: 24px 48px;
+            padding: 16px 32px;
             border-radius: 24px;
-            background-color: #57CC99; /* fallback for browsers not supporting gradient text */
+            background-color: #57CC99;
             display: inline-block;
             box-shadow: 0 4px 24px rgba(67, 234, 110, 0.25), 0 2px 8px #fff;
-            /* Gradient text for modern browsers */
-            background-clip: text;
-            text-fill-color: transparent;
-            /* fallback: show gradient as background and white text */
+            margin-bottom: 16px;
+            word-break: break-word;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
         }
         .nav-btn {
-            background: #A7D8B8; /* lighter pastel green */
-            color: #222; /* dark for contrast */
+            background: #A7D8B8;
+            color: #222;
             border: none;
-            padding: 16px 40px;
-            font-size: 1.1rem;
+            padding: 12px 24px;
+            font-size: 1rem;
             border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
@@ -50,36 +54,20 @@
             font-weight: bold;
         }
         .nav-btn:hover {
-            background: #81C784; /* green accent */
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 30px;
-        }
-        .nav-buttons button {
-            background: #A7D8B8;
-            color: #222;
-            border: none;
-            padding: 16px 40px;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-weight: bold;
-        }
-        .nav-buttons button:hover {
             background: #81C784;
         }
         .featured-quizzes {
             display: flex;
-            justify-content: space-between;
-            gap: 40px;
-            padding: 60px 80px 0 80px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            padding: 40px 5vw 0 5vw;
         }
         .quizz-card {
-            background: #E9F5DB; /* very light green */
+            background: #E9F5DB;
             border-radius: 18px;
             width: 420px;
+            max-width: 100%;
             height: 420px;
             display: flex;
             flex-direction: column;
@@ -88,7 +76,8 @@
             position: relative;
         }
         .quizz-image {
-            width: 420px;
+            width: 100%;
+            max-width: 420px;
             height: 140px;
             object-fit: cover;
             background: #B7E4C7;
@@ -97,7 +86,7 @@
         }
         .quizz-content {
             flex: 1;
-            padding: 24px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -106,19 +95,19 @@
             font-size: 1.3rem;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #388E3C; /* green accent */
+            color: #388E3C;
         }
         .quizz-desc {
             font-size: 1rem;
-            color: #4F4F4F; /* soft dark */
+            color: #4F4F4F;
             margin-bottom: 20px;
         }
         .quiz-btn {
             align-self: flex-end;
-            background: #81C784; /* green accent */
+            background: #81C784;
             color: #fff;
             border: none;
-            padding: 12px 32px;
+            padding: 10px 20px;
             font-size: 1rem;
             border-radius: 8px;
             cursor: pointer;
@@ -129,26 +118,29 @@
             background: #388E3C;
         }
         .about-section {
-            margin: 120px 80px 0 80px;
-            background: #E9F5DB; /* very light green */
+            margin: 80px 5vw 0 5vw;
+            background: #E9F5DB;
             border-radius: 28px;
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            padding: 60px;
+            padding: 32px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.10);
             background: linear-gradient(90deg, #E9F5DB 60%, #B7E4C7 100%);
         }
         .about-image {
-            width: 380px;
-            height: 380px;
+            width: 320px;
+            height: 320px;
             object-fit: cover;
             border-radius: 18px;
-            margin-right: 60px;
+            margin-right: 40px;
             background: #B7E4C7;
+            margin-bottom: 16px;
         }
         .about-content {
             flex: 1;
             color: #222;
+            min-width: 220px;
         }
         .about-title {
             font-size: 2rem;
@@ -157,9 +149,89 @@
             color: #388E3C;
         }
         .about-desc {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #4F4F4F;
             line-height: 1.6;
+        }
+        @media (max-width: 900px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 24px 4vw 12px 4vw;
+            }
+            .site-name {
+                font-size: 2.5rem;
+                padding: 12px 16px;
+            }
+            .nav-buttons {
+                gap: 10px;
+                margin-bottom: 8px;
+            }
+            .featured-quizzes {
+                gap: 20px;
+                padding: 24px 2vw 0 2vw;
+            }
+            .quizz-card {
+                width: 100%;
+                max-width: 400px;
+                height: auto;
+            }
+            .quizz-image {
+                max-width: 100%;
+                height: 120px;
+            }
+            .about-section {
+                flex-direction: column;
+                padding: 20px;
+                margin: 40px 2vw 0 2vw;
+            }
+            .about-image {
+                width: 220px;
+                height: 220px;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+        @media (max-width: 600px) {
+            .site-name {
+                font-size: 1.5rem;
+                padding: 8px 8px;
+            }
+            .header {
+                padding: 12px 2vw 8px 2vw;
+            }
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            .featured-quizzes {
+                gap: 12px;
+                padding: 12px 1vw 0 1vw;
+            }
+            .quizz-card {
+                max-width: 100%;
+                min-width: 0;
+                height: auto;
+            }
+            .quizz-image {
+                height: 80px;
+            }
+            .about-section {
+                padding: 10px;
+                margin: 24px 1vw 0 1vw;
+            }
+            .about-image {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 12px;
+            }
+            .about-title {
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+            }
+            .about-desc {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
