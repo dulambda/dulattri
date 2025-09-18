@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мир Квизззов</title>
+    <meta name="viewport" content="width=1920, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            width: 100%;
+            height: 2930px;
+            background: #C7F9CC; /* pastel green */
+            color: #222; /* dark for contrast */
+            font-family: Arial, sans-serif;
+            opacity: 1;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 80px 20px 80px;
+        }
+        .site-name {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #7EC8E3;
+            background: linear-gradient(90deg, #43EA6E 0%, #3B82F6 50%, #F472B6 100%);
+            padding: 24px 48px;
+            border-radius: 24px;
+            background-color: #57CC99; /* fallback for browsers not supporting gradient text */
+            display: inline-block;
+            box-shadow: 0 4px 24px rgba(67, 234, 110, 0.25), 0 2px 8px #fff;
+            /* Gradient text for modern browsers */
+            background-clip: text;
+            text-fill-color: transparent;
+            /* fallback: show gradient as background and white text */
+        }
+        .nav-btn {
+            background: #A7D8B8; /* lighter pastel green */
+            color: #222; /* dark for contrast */
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .nav-btn:hover {
+            background: #81C784; /* green accent */
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 30px;
+        }
+        .nav-buttons button {
+            background: #A7D8B8;
+            color: #222;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+        .nav-buttons button:hover {
+            background: #81C784;
+        }
+        .featured-quizzes {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 60px 80px 0 80px;
+        }
+        .quizz-card {
+            background: #E9F5DB; /* very light green */
+            border-radius: 18px;
+            width: 420px;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            position: relative;
+        }
+        .quizz-image {
+            width: 420px;
+            height: 140px;
+            object-fit: cover;
+            background: #B7E4C7;
+            display: block;
+            margin: 0 auto;
+        }
+        .quizz-content {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .quizz-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #388E3C; /* green accent */
+        }
+        .quizz-desc {
+            font-size: 1rem;
+            color: #4F4F4F; /* soft dark */
+            margin-bottom: 20px;
+        }
+        .quiz-btn {
+            align-self: flex-end;
+            background: #81C784; /* green accent */
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+        .quiz-btn:hover {
+            background: #388E3C;
+        }
+        .about-section {
+            margin: 120px 80px 0 80px;
+            background: #E9F5DB; /* very light green */
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            padding: 60px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            background: linear-gradient(90deg, #E9F5DB 60%, #B7E4C7 100%);
+        }
+        .about-image {
+            width: 380px;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 18px;
+            margin-right: 60px;
+            background: #B7E4C7;
+        }
+        .about-content {
+            flex: 1;
+            color: #222;
+        }
+        .about-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 24px;
+            color: #388E3C;
+        }
+        .about-desc {
+            font-size: 1.2rem;
+            color: #4F4F4F;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="site-name">Мир Квизззов</div>
+        <div class="nav-buttons">
+        <a href="#" class="nav-btn">Главная</a>
+        <a href="#quizzes" class="nav-btn">Квизы</a>
+        <a href="#about" class="nav-btn">О Нас</a>
+        </div>
+    </div>
+    <div id="quizzes" class="featured-quizzes">
+        <div class="quizz-card">
+            <img src="1.png" alt="quizz 1" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">МАТЕМАТИКА</div>
+                    <div class="quizz-desc">Квиз по Математике за 5-6 классы. Алгебра, Арифметика и так далее.</div>
+                </div>
+                <button class="quiz-btn">Пройти Квиз</button>
+            </div>
+        </div>
+        <div class="quizz-card">
+            <img src="2.jpg" alt="quizz 2" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">ЛИТЕРАТУРА</div>
+                    <div class="quizz-desc">Казахская и Русская Литература. Квиз включает вопросы по классикам и поэтам.</div>
+                </div>
+                <button class="quiz-btn">Пройти Квиз</button>
+            </div>
+        </div>
+        <div class="quizz-card">
+            <img src="3.png" alt="quizz 3" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">ХИМИЯ</div>
+                    <div class="quizz-desc">Квиз по Химии. Периодическая таблица Менделеева прилагается.</div>
+                </div>
+                <button class="quiz-btn">Пройти Квиз</button>
+            </div>
+        </div>
+        <div class="quizz-card">
+            <img src="4.webp" alt="quizz 4" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">КАЗАКСТАН ТАРИХЫ</div>
+                    <div class="quizz-desc">Квиз по Истории Казахстана. Вопросы состоят из периода 1500-1770 годов.</div>
+                </div>
+                <button class="quiz-btn">Пройти Квиз</button>
+            </div>
+        </div>
+    </div>
+    <div id="about" class="about-section">
+        <img src="about.avif" alt="О Нас" class="about-image">
+        <div class="about-content">
+            <div class="about-title">О Нас</div>
+            <div class="about-desc">
+                Данный сайт содержит всевозможные Квизы по Школьным темам для прохождения, можете проходить сами для того чтобы освежить накопленные с 11 лет знания, либо пройти вместе со своим чадом и проверить их уровень знания и посмотреть, заслужили ли они свои ПЯТЕРОЧКИ в Дневнике или ДВОЙКИ с заметками от Марии Павловны.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
