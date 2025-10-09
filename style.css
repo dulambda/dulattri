@@ -46,6 +46,19 @@ body {
             position: relative;
             animation: glister 2s linear infinite alternate;
         }
+
+        .site-name.bounce {
+                animation: bounceTitle 2.5s cubic-bezier(.25,1.25,.5,1.05);
+        }
+
+        @keyframes bounceTitle {
+            0%   { transform: translateY(0); }
+            20%  { transform: translateY(-40px); }
+            40%  { transform: translateY(0); }
+            60%  { transform: translateY(-20px); }
+            80%  { transform: translateY(0); }
+            100% { transform: translateY(0); }
+        }
         .site-name:hover {
             transform: scale(1.08);
             animation: glister-fast 0.8s linear infinite alternate;
@@ -291,3 +304,73 @@ body {
                 font-size: 1rem;
             }
         }
+        /* Меню-гамбургер */
+.dropdown-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    text-align: center;
+}
+
+.menu-icon {
+    font-size: 2rem;
+    background: #A7D8B8;
+    color: #222;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+}
+
+.menu-icon:hover {
+    background: #81C784;
+}
+
+/* Выпадающее меню */
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    background: #E9F5DB;
+    border-radius: 12px;
+    margin-top: 12px;
+    padding: 12px 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+}
+
+.dropdown-link {
+    text-decoration: none;
+    color: #222;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.dropdown-link:hover {
+    background: #C7F9CC;
+}
+
+/* Адаптация под мобильные */
+@media (max-width: 600px) {
+    .menu-icon {
+        font-size: 1.5rem;
+        padding: 8px 16px;
+    }
+
+    .dropdown-menu {
+        width: 160px;
+    }
+
+    .dropdown-link {
+        font-size: 1rem;
+        padding: 10px 16px;
+    }
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отзывы — Мир Квизззов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Навигация -->
+        <div class="dropdown-container">
+    <div class="menu-icon" onclick="toggleMenu()">
+        ☰ Меню
+    </div>
+    <div class="dropdown-menu" id="dropdownMenu">
+        <a href="index.html" class="dropdown-link">Главная</a>
+        <a href="#quizzes" class="dropdown-link">Квизы</a>
+        <a href="#about" class="dropdown-link">О Нас</a>
+        <a href="reviews.html" class="dropdown-link">Отзывы</a>
+    </div>
+</div>
+
+    <!-- Заголовок страницы -->
+    <div class="header">
+        <div class="site-name">Отзывы</div>
+        <div class="site-desc">Что говорят наши пользователи о квизах и их опыте прохождения.</div>
+    </div>
+
+    <!-- Секция отзывов -->
+    <div class="featured-quizzes" style="background: #D8F3DC;">
+        <!-- Отзыв 1 -->
+        <div class="quizz-card">
+            <img src="pro1.jpg" alt="Пользователь 1" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">Айгуль Т.</div>
+                    <div class="quizz-desc">Проходила квиз по литературе с дочкой — очень понравилось! Вопросы интересные, не слишком сложные, но требуют знаний.</div>
+                </div>
+                <button class="quiz-btn" disabled>5 ★</button>
+            </div>
+        </div>
+
+        <!-- Отзыв 2 -->
+        <div class="quizz-card">
+            <img src="pro2.jpg" alt="Пользователь 2" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">Ерлан К.</div>
+                    <div class="quizz-desc">Квиз по истории Казахстана помог мне подготовиться к контрольной. Очень удобно, что всё собрано в одном месте.</div>
+                </div>
+                <button class="quiz-btn" disabled>4.5 ★</button>
+            </div>
+        </div>
+
+        <!-- Отзыв 3 -->
+        <div class="quizz-card">
+            <img src="pro3.jpg" alt="Пользователь 3" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">Мария П.</div>
+                    <div class="quizz-desc">Платформа красочная, детям нравится, а я как учитель использую материалы для своих занятий. Спасибо!</div>
+                </div>
+                <button class="quiz-btn" disabled>5 ★</button>
+            </div>
+        </div>
+
+        <!-- Отзыв 4 -->
+        <div class="quizz-card">
+            <img src="pro4.jpg" alt="Пользователь 4" class="quizz-image">
+            <div class="quizz-content">
+                <div>
+                    <div class="quizz-title">Рустам Н.</div>
+                    <div class="quizz-desc">Есть куда развиваться, хотелось бы больше квизов по географии и биологии. Но уже сейчас — отличная идея и реализация.</div>
+                </div>
+                <button class="quiz-btn" disabled>4 ★</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

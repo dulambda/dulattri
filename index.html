@@ -7,11 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="#" class="nav-btn">Главная</a>
-        <a href="#quizzes" class="nav-btn">Квизы</a>
-        <a href="#about" class="nav-btn">О Нас</a>
+    <div class="dropdown-container">
+    <div class="menu-icon" onclick="toggleMenu()">
+        ☰ Меню
     </div>
+    <div class="dropdown-menu" id="dropdownMenu">
+        <a href="index.html" class="dropdown-link">Главная</a>
+        <a href="#quizzes" class="dropdown-link">Квизы</a>
+        <a href="#about" class="dropdown-link">О Нас</a>
+        <a href="reviews.html" class="dropdown-link">Отзывы</a>
+    </div>
+</div>
     <div class="header">
         <div class="site-name">Мир Квизззов</div>
         <div class="site-desc">
