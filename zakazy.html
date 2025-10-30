@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Заказы — Мир Квизззов</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+    /* ====== Доп. стили, чтобы страница выглядела и работала автономно (можно скопировать в style.css) ====== */
+
+    /* Fullscreen menu */
+    .fullmenu {
+        position: fixed;
+        inset: 0;
+        background: rgba(12, 95, 71, 0.95);
+        color: #fff;
+        display: none; /* hidden by default */
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .fullmenu .close-btn {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        background: #fff;
+        color: #0b5a3b;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .fullmenu a {
+        color: #fff;
+        font-size: 1.8rem;
+        text-decoration: none;
+        padding: 6px 12px;
+    }
+
+    /* Section title uniform */
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 40px 0 20px;
+        color: #2f7f4a;
+    }
+    .section-title-2 {
+        text-align: center;
+        font-size: 1rem;
+        font-weight: bold;
+        margin: 40px 0 20px;
+        color: #2f7f4a;
+    }
+
+
+    main {
+        padding-bottom: 6rem;
+    }
+
+    /* Slider (single slide layout) */
+    .slider {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .slider-viewport {
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+    .slides {
+        display: flex;
+        transition: transform 0.45s cubic-bezier(.2,.9,.3,1);
+        width: 100%;
+    }
+    .slide {
+        min-width: 100%;
+        box-sizing: border-box;
+        padding: 24px;
+        background: #E9F5DB;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+    .slide img {
+        width: 320px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+    .slide .slide-body {
+        flex: 1;
+    }
+    .slider-controls {
+        display:flex;
+        justify-content:center;
+        gap:12px;
+        margin-top:12px;
+    }
+    .slider-controls button {
+        background:#81C784;
+        color:#fff;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+    }
+
+    /* Vertical accordion */
+    .accordion {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        display:flex;
+        flex-direction:column;
+        gap: 12px;
+    }
+    .acc-item {
+        background: #F7FFF6;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+    .acc-head {
+        display:flex;
+        align-items:center;
+        justify-content: space-between;
+        padding: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .acc-head .title {
+        font-weight: bold;
+        color: #2f7f4a;
+    }
+    .acc-head .triangle {
+        width: 0; height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 12px solid #2f7f4a; /* down */
+        transition: transform 0.25s ease, border-top-color 0.25s;
+    }
+    .acc-body-wrap {
+        height: 0; /* hidden by default */
+        overflow: hidden;
+        transition: height 0.36s cubic-bezier(.2,.9,.3,1);
+    }
+    .acc-body {
+        padding: 16px;
+        color:#444;
+        line-height:1.5;
+    }
+    /* active modifier */
+    .acc-item.active .acc-head {
+        background: #FFF6E0;
+    }
+    .acc-item.active .acc-head .title {
+        color: #B58900; /* yellowish */
+    }
+    .acc-item.active .triangle {
+        transform: rotate(180deg); /* up */
+        border-top-color: #B58900;
+    }
+
+    /* Slideshow widget (avatars + contents) */
+    .slideshow {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .slideshow-wrap {
+        display:flex;
+        gap: 18px;
+        align-items: flex-start;
+        flex-wrap:wrap;
+    }
+    .avatar-list {
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+    .avatar-list button {
+        width:64px;
+        height:64px;
+        border-radius:50%;
+        overflow:hidden;
+        border: 3px solid transparent;
+        background: #fff;
+        cursor:pointer;
+    }
+    .avatar-list button.active {
+        border-color:#81C784;
+    }
+    .content-list {
+        flex:1;
+        min-width:300px;
+    }
+    .content-item {
+        display:none;
+        background:#fff;
+        padding:16px;
+        border-radius:12px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.06);
+    }
+    .content-item.active {
+        display:block;
+    }
+
+    /* Order form */
+    .order-section {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px;
+        background: #E9F5DB;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .order-row {
+        display:flex;
+        gap:12px;
+        margin-bottom:12px;
+        flex-wrap:wrap;
+    }
+    .order-row input,
+    .order-row textarea {
+        padding:10px;
+        border-radius:8px;
+        border:1px solid #bfcfc0;
+        font-size:1rem;
+        flex:1;
+    }
+    .order-row .small {
+        flex: 0 0 260px;
+    }
+    .order-actions {
+        display:flex;
+        gap:12px;
+        justify-content:flex-end;
+        margin-top:12px;
+    }
+    .btn-primary {
+        background:#388E3C;
+        color:#fff;
+        border:none;
+        padding:10px 16px;
+        border-radius:8px;
+        cursor:pointer;
+    }
+    .btn-secondary {
+        background:#fff;
+        color:#388E3C;
+        border:1px solid #388E3C;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        z-index: 3000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .modal {
+        background:#fff;
+        max-width:600px;
+        width:100%;
+        padding:20px;
+        border-radius:12px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        text-align:center;
+    }
+    .modal h3 { margin-top:0; color:#2f7f4a; }
+    .modal p { color:#444; }
+    .modal .ok {
+        background:#81C784;
+        color:#fff;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        margin-top:12px;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width:900px) {
+        .slide img { width: 220px; height:140px; }
+    }
+    @media (max-width:600px) {
+        .slide { flex-direction: column; align-items:center; }
+        .slide img { width:100%; height:180px; }
+        .order-row { flex-direction: column; }
+    }
+
+    </style>
+</head>
+<body>
+    <!-- простая навигация + кнопка открытия fullscreen меню -->
+    <div style="padding:18px; display:flex;gap:12px; align-items:center; justify-content:space-between;">
+        <div class="site-name" style="font-size:1.6rem;">Мир Квизззов — Заказы</div>
+        <div style="display:flex; gap:8px;">
+            <button id="openFullMenu" class="nav-btn">Меню (полный экран)</button>
+        </div>
+    </div>
+
+    <!-- Fullscreen menu -->
+    <div id="fullmenu" class="fullmenu" aria-hidden="true">
+        <button class="close-btn" id="closeFullMenu">Закрыть ✕</button>
+            <a href="index.html" class="dropdown-link">Главная</a>
+            <a href="#quizzes" class="dropdown-link">Квизы</a>
+            <a href="#why-us" class="dropdown-link">Почему Мы</a>
+            <a href="#team" class="dropdown-link">Команда</a>
+            <a href="#test-info" class="dropdown-link">Как пройти тест</a>
+            <a href="#subscribe" class="dropdown-link">Подписка</a>
+            <a href="reviews.html" class="dropdown-link">Отзывы</a>
+            <a href="#about" class="dropdown-link">О Нас</a>
+            <a href="#location" class="nav-btn">Где Нас Найти</a>
+            <a href="zakazy.html" class="dropdown-link">Заказы</a>
+    </div>
+
+    <main>
+        <!-- Секция: слайдер (пока 3 слайда верстка) -->
+        <section class="slider" id="slider-section">
+            <div class="section-title">Специальные Предложения</div>
+            <div class="section-title-2">(Слайдер - пеереключите по стрелочкам)</div>
+
+            <div class="slider-viewport">
+                <div class="slides" id="slides">
+                    <!-- Один слайд -->
+                    <div class="slide">
+                        <img src="5.jpg" alt="Пример предложения">
+                        <div class="slide-body">
+                            <h3>Квиз со скидкой для школ</h3>
+                            <p>Подробности: пакет из 20 заданий для школьных групп. Можно заказать как разовое решение или подписку.</p>
+                            <div style="margin-top:12px;">
+                                <button class="btn-primary" onclick="alert('Демо: заказать пакет')">Заказать пакет</button>
+                            </div>
+                        </div>
+                    </div>
+                                        <!-- Один слайд -->
+                    <div class="slide">
+                        <img src="1.png" alt="Пример предложения">
+                        <div class="slide-body">
+                            <h3>Квиз по Математике</h3>
+                            <p>Подробности: пакет из 5 заданий для школьной математики. Можно заказать как разовое решение или подписку.</p>
+                            <div style="margin-top:12px;">
+                                <button class="btn-primary" onclick="alert('Демо: заказать пакет')">Заказать пакет</button>
+                            </div>
+                        </div>
+                    </div>
+                                        <!-- Один слайд -->
+                    <div class="slide">
+                        <img src="2.jpg" alt="Пример предложения">
+                        <div class="slide-body">
+                            <h3>Квиз по Литературе</h3>
+                            <p>Подробности: пакет из 10 заданий для школьной Литературы. Можно заказать как разовое решение или подписку.</p>
+                            <div style="margin-top:12px;">
+                                <button class="btn-primary" onclick="alert('Демо: заказать пакет')">Заказать пакет</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- при необходимости сюда можно копировать .slide -->
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button id="prevSlide">←</button>
+                <button id="nextSlide">→</button>
+            </div>
+        </section>
+
+        <!-- Вертикальный Аккордеон -->
+        <section id="faq" class="accordion-section" style="padding:24px;">
+            <div class="section-title">Часто спрашивают</div>
+            <div class="section-title-2">(Вертикальный Аккордеон)</div>
+            <div class="accordion" id="accordion">
+                <div class="acc-item">
+                    <div class="acc-head">
+                        <div class="title">Как работают наши квизы?</div>
+                        <div class="triangle"></div>
+                    </div>
+                    <div class="acc-body-wrap">
+                        <div class="acc-body">
+                            Наши квизы — это наборы вопросов с мгновенной проверкой. В конце вы видите результат и подсказки.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <div class="acc-head">
+                        <div class="title">Можно ли использовать для класса?</div>
+                        <div class="triangle"></div>
+                    </div>
+                    <div class="acc-body-wrap">
+                        <div class="acc-body">
+                            Да. Есть групповые пакеты и рекомендации по применению в классах.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <div class="acc-head">
+                        <div class="title">Есть ли поддержка?</div>
+                        <div class="triangle"></div>
+                    </div>
+                    <div class="acc-body-wrap">
+                        <div class="acc-body">
+                            Поддержка по email и через форму заказа — мы ответим в рабочие часы.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Слайдшоу: аватары + содержимое -->
+        <section id="slideshow" class="slideshow">
+            <div class="section-title">Отзывы и кейсы</div>
+            <div class="section-title-2">(Слайдшоу - нажмите на Аватарки)</div>
+            <div class="slideshow-wrap">
+                <div class="avatar-list" id="avatars">
+                    <button data-index="0" class="active" title="Дулат"><img src="pro3.jpg" alt="A1" style="width:100%;height:100%;object-fit:cover;"></button>
+                    <button data-index="1" title="Степан"><img src="pro2.jpg" alt="A2" style="width:100%;height:100%;object-fit:cover;"></button>
+                    <button data-index="2" title="Асыл"><img src="pro1.jpg" alt="A3" style="width:100%;height:100%;object-fit:cover;"></button>
+                </div>
+                <div class="content-list" id="contents">
+                    <div class="content-item" data-index="0">
+                        <h4>Дулат М.</h4>
+                        <p>«Платформа красочная, ученикам нравится, а мне как репетитору удобно использовать материалы.»</p>
+                    </div>
+                    <div class="content-item" data-index="1">
+                        <h4>Степан К.</h4>
+                        <p>«Квиз по истории помог подготовиться к контрольной. Удобно и понятно.»</p>
+                    </div>
+                    <div class="content-item active" data-index="2">
+                        <h4>Асыл Т.</h4>
+                        <p>«Проходила квиз по литературе с дочкой — очень понравилось! Вопросы интересные.»</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция: Заказ (форма и кнопка отправки) -->
+        <section id="order" class="order-section" style="margin-top:36px;">
+            <div class="section-title">Заказ</div>
+
+            <form id="orderForm" novalidate>
+                <div class="order-row">
+                    <input type="text" id="name" name="name" placeholder="Ваше имя" required />
+                    <input type="tel" id="phone" name="phone" placeholder="Телефон" class="small" required />
+                </div>
+
+                <div class="order-row">
+                    <input type="email" id="to" name="to" placeholder="Email для связи (куда отправляем)" required />
+                </div>
+
+                <div class="order-row">
+                    <textarea id="comment" name="comment" rows="4" placeholder="Комментарий (опционально)"></textarea>
+                </div>
+
+                <div class="order-actions">
+                    <button type="reset" class="btn-secondary">Очистить</button>
+                    <button type="submit" class="btn-primary">Отправить заказ</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Modal overlay (скрыт пока) -->
+    <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <h3 id="modalTitle">Статус</h3>
+            <p id="modalMessage">...</p>
+            <button id="modalOk" class="ok">Хорошо</button>
+        </div>
+    </div>
+
+    <script>
+    // ======= Fullscreen menu =========
+    (function(){
+        const openBtn = document.getElementById('openFullMenu');
+        const closeBtn = document.getElementById('closeFullMenu');
+        const full = document.getElementById('fullmenu');
+
+        openBtn && openBtn.addEventListener('click', () => {
+            full.style.display = 'flex';
+            full.setAttribute('aria-hidden','false');
+        });
+        closeBtn && closeBtn.addEventListener('click', () => {
+            full.style.display = 'none';
+            full.setAttribute('aria-hidden','true');
+        });
+        // close on Escape
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && full.style.display === 'flex') {
+                full.style.display = 'none';
+                full.setAttribute('aria-hidden','true');
+            }
+        });
+        // close clicking outside links area
+        full.addEventListener('click', (e) => {
+            if(e.target === full) {
+                full.style.display = 'none';
+                full.setAttribute('aria-hidden','true');
+            }
+        });
+    })();
+
+    // ======= Slider (minimal) ========
+    (function(){
+        const slidesEl = document.getElementById('slides');
+        const prev = document.getElementById('prevSlide');
+        const next = document.getElementById('nextSlide');
+        let idx = 0;
+        const total = slidesEl ? slidesEl.children.length : 0;
+
+        function show(i){
+            idx = (i + total) % total;
+            slidesEl.style.transform = 'translateX(' + (-idx * 100) + '%)';
+        }
+        prev && prev.addEventListener('click', () => show(idx-1));
+        next && next.addEventListener('click', () => show(idx+1));
+        // initial
+        if(total > 0) show(0);
+    })();
+
+    // ======= Accordion (vertical) ========
+    (function(){
+        const acc = document.getElementById('accordion');
+        if(!acc) return;
+        const items = Array.from(acc.querySelectorAll('.acc-item'));
+
+        items.forEach(item => {
+            const head = item.querySelector('.acc-head');
+            const bodyWrap = item.querySelector('.acc-body-wrap');
+            const body = item.querySelector('.acc-body');
+
+            // ensure initial height 0
+            bodyWrap.style.height = '0px';
+
+            head.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+
+                // close all
+                items.forEach(i => {
+                    i.classList.remove('active');
+                    i.querySelector('.acc-body-wrap').style.height = '0px';
+                });
+
+                if(!isActive) {
+                    // open clicked
+                    item.classList.add('active');
+                    // measure real height
+                    const fullH = body.scrollHeight;
+                    bodyWrap.style.height = fullH + 'px';
+                } else {
+                    // closed already - it stays closed
+                    item.classList.remove('active');
+                    bodyWrap.style.height = '0px';
+                }
+            });
+
+            // ensure if window resizes and item open -> recalc height
+            window.addEventListener('resize', () => {
+                if(item.classList.contains('active')) {
+                    bodyWrap.style.height = body.scrollHeight + 'px';
+                }
+            });
+        });
+    })();
+
+    // ======= Slideshow widget (avatars -> content) ========
+    (function(){
+        const avatars = document.getElementById('avatars');
+        const contents = document.getElementById('contents');
+        if(!avatars || !contents) return;
+
+        const avatarButtons = Array.from(avatars.querySelectorAll('button'));
+        const contentItems = Array.from(contents.querySelectorAll('.content-item'));
+
+        function showIndex(i) {
+            avatarButtons.forEach(b => b.classList.remove('active'));
+            contentItems.forEach(c => c.classList.remove('active'));
+
+            const b = avatarButtons[i];
+            const c = contentItems[i];
+            if(b) b.classList.add('active');
+            if(c) c.classList.add('active');
+        }
+
+        avatarButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const i = Number(btn.getAttribute('data-index'));
+                showIndex(i);
+            });
+        });
+
+        // initial
+        showIndex(0);
+    })();
+
+    // ======= Modal helpers ========
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalOk = document.getElementById('modalOk');
+
+    function showModal(title, text) {
+        modalTitle.textContent = title || 'Статус';
+        modalMessage.textContent = text || '';
+        modalOverlay.style.display = 'flex';
+        modalOverlay.setAttribute('aria-hidden','false');
+    }
+    function hideModal() {
+        modalOverlay.style.display = 'none';
+        modalOverlay.setAttribute('aria-hidden','true');
+    }
+    modalOk && modalOk.addEventListener('click', hideModal);
+    modalOverlay && modalOverlay.addEventListener('click', (e) => {
+        if(e.target === modalOverlay) hideModal();
+    });
+
+    // ======= Order form: validation + AJAX POST (fetch) ========
+    (function(){
+        const form = document.getElementById('orderForm');
+        if(!form) return;
+
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const to = document.getElementById('to').value.trim();
+            const comment = document.getElementById('comment').value.trim();
+
+            // Простая валидация
+            if(!name) { showModal('Ошибка', 'Поле "Имя" не заполнено.'); return; }
+            if(!phone) { showModal('Ошибка', 'Поле "Телефон" не заполнено.'); return; }
+            if(!to) { showModal('Ошибка', 'Поле "Email" не заполнено.'); return; }
+            // email basic regex
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!re.test(to)) { showModal('Ошибка', 'Введите корректный Email.'); return; }
+
+            // prepare payload
+            const payload = { name, phone, comment, to };
+
+            // show spinner modal while waiting
+            showModal('Отправка', 'Запрос отправляется, подождите...');
+
+            // отправляем POST JSON (fetch)
+            fetch('https://webdev-api.loftschool.com/sendmail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(res => res.json().catch(() => ({ status: 'error', message:'Некорректный JSON в ответе'})))
+            .then(data => {
+                // сервер эмулирует случайный ответ: смотрим поле status
+                // допускаем варианты 'OK', 'success', true
+                const statusRaw = (data && data.status) ? String(data.status).toLowerCase() : '';
+                const isSuccess = (statusRaw === 'ok' || statusRaw === 'success' || statusRaw === 'sent' || statusRaw === 'true');
+                const msg = data && (data.message || data.text || data.error) ? (data.message || data.text || data.error) : JSON.stringify(data);
+
+                if(isSuccess) {
+                    showModal('Успех', msg || 'Ваше сообщение успешно отправлено (эмуляция).');
+                    form.reset();
+                } else {
+                    showModal('Ошибка', msg || 'Произошла ошибка при отправке. Попробуйте позже.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showModal('Ошибка', 'Сетевая ошибка. Невозможно отправить запрос.');
+            });
+        });
+    })();
+    </script>
+</body>
+</html>
