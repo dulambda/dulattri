@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* --- Общие стили --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    section {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: transform 0.8s ease;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    /* --- Секция 1: Горизонтальный аккордеон --- */
+    .accordion-horizontal {
+      display: flex;
+      width: 90%;
+      height: 400px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .accordion-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      transition: flex-basis 0.5s ease;
+      background: #e0e0e0;
+      cursor: pointer;
+      position: relative;
+      border-right: 1px solid #ccc;
+    }
+
+    .accordion-item:last-child {
+      border-right: none;
+    }
+
+    .accordion-header {
+      padding: 1rem;
+      background: #343a40;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .accordion-content {
+      width: 0;
+      overflow: hidden;
+      transition: width 0.5s ease;
+      background: #fff;
+      flex-grow: 1;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .accordion-item.active .accordion-content {
+      width: 100%;
+    }
+
+    .accordion-item.active {
+      flex: 3;
+      background: #dee2e6;
+    }
+
+    @media (max-width: 768px) {
+      .accordion-horizontal {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .accordion-item {
+        flex: unset;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .accordion-content {
+        width: 100%;
+        height: 0;
+        transition: height 0.4s ease;
+      }
+
+      .accordion-item.active .accordion-content {
+        height: auto;
+      }
+    }
+
+    /* --- Секция 2: OnePageScroll --- */
+    .wrapper {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .main-content {
+      transition: transform 0.8s ease;
+    }
+
+    /* --- Секция 3: Видеоплеер --- */
+    .video-section video {
+      width: 70%;
+      border-radius: 8px;
+    }
+
+    .video-controls {
+      margin-top: 1rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      background: #343a40;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* --- Секция 4: Карта --- */
+    #map {
+      width: 80%;
+      height: 70%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="main-content">
+
+      <!-- SECTION 1: FAQ Accordion -->
+      <section id="faq">
+        <h2>FAQ — Часто задаваемые вопросы</h2>
+        <div class="accordion-horizontal">
+          <div class="accordion-item active">
+            <div class="accordion-header">1. Что такое ваш сервис?</div>
+            <div class="accordion-content">
+              <p>Мы предоставляем современные решения для веб-разработки и обучения.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">2. Как связаться с поддержкой?</div>
+            <div class="accordion-content">
+              <p>Вы можете написать нам через форму обратной связи или по email support@example.com.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">3. Есть ли мобильная версия?</div>
+            <div class="accordion-content">
+              <p>Да, сайт полностью адаптирован под мобильные устройства.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">4. Где находятся ваши офисы?</div>
+            <div class="accordion-content">
+              <p>Наш главный офис расположен в Алматы.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">5. Как оставить отзыв?</div>
+            <div class="accordion-content">
+              <p>Вы можете отправить отзыв через контактную форму на сайте.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: Video Player -->
+      <section class="video-section">
+        <h2>Видео-презентация</h2>
+        <video id="myVideo" src="video.mp4" controls></video>
+        <div class="video-controls">
+          <button onclick="playVideo()">▶ Play</button>
+          <button onclick="pauseVideo()">⏸ Pause</button>
+          <button onclick="stopVideo()">⏹ Stop</button>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Google Map -->
+      <section class="map-section">
+        <h2>Мы на карте</h2>
+        <div id="map"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    /* --- Горизонтальный аккордеон --- */
+    const items = document.querySelectorAll('.accordion-item');
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        items.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    /* --- OnePageScroll --- */
+    const mainContent = document.querySelector('.main-content');
+    const sections = document.querySelectorAll('section');
+    let currentSection = 0;
+
+    window.addEventListener('wheel', (event) => {
+      if (event.deltaY > 0) currentSection++;
+      else currentSection--;
+      if (currentSection < 0) currentSection = 0;
+      if (currentSection >= sections.length) currentSection = sections.length - 1;
+      mainContent.style.transform = `translateY(-${currentSection * 100}vh)`;
+    });
+
+    /* --- Видеоплеер HTML5 API --- */
+    const video = document.getElementById('myVideo');
+    function playVideo() { video.play(); }
+    function pauseVideo() { video.pause(); }
+    function stopVideo() { video.pause(); video.currentTime = 0; }
+
+    /* --- Google Map --- */
+    function initMap() {
+      const location = { lat: 43.238949, lng: 76.889709 }; // Алматы
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: location,
+      });
+      new google.maps.Marker({ position: location, map: map });
+    }
+  </script>
+
+  <!-- Подключение Google Maps API -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+  </script>
+
+</body>
+</html>
