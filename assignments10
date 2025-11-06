@@ -60,4 +60,778 @@
 - Регистрация/авторизация пользователей
 - Создание и редактирование задач (у каждого пользователя свой список)
 - Возможность фильтрации по дате создания, по статусу задания(новое, выполненное, удаленное)
- 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мир Квизззов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Навигация -->
+    <div class="dropdown-container">
+        <div class="menu-icon" onclick="toggleMenu()">☰ Меню</div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="index.html" class="dropdown-link">Главная</a>
+            <a href="#quizzes" class="dropdown-link">Квизы</a>
+            <a href="#why-us" class="dropdown-link">Почему Мы</a>
+            <a href="#team" class="dropdown-link">Команда</a>
+            <a href="#test-info" class="dropdown-link">Как пройти тест</a>
+            <a href="#subscribe" class="dropdown-link">Подписка</a>
+            <a href="reviews.html" class="dropdown-link">Отзывы</a>
+            <a href="#about" class="dropdown-link">О Нас</a>
+            <a href="#location" class="nav-btn">Где Нас Найти</a>
+            <a href="zakazy.html" class="dropdown-link">Заказы</a>
+        </div>
+    </div>
+
+    <!-- Шапка -->
+    <div class="header">
+        <div class="site-name">Мир Квизззов</div>
+        <div class="site-desc">
+            Добро пожаловать! Здесь вы найдете Всевозможные тесты и квизы по вашим любимым школьным предметам для освежения знаний.
+        </div>
+    </div>
+
+    <!-- Квизы -->
+    <div id="quizzes" class="quizzes">
+        <div class="quizz-titlee">Наши Квизы</div> <!-- ✅ Добавлен заголовок -->
+        <div class="featured-quizzes">
+            <div class="quizz-card">
+                <img src="1.png" alt="quizz 1" class="quizz-image">
+                <div class="quizz-content">
+                    <div>
+                        <div class="quizz-title">МАТЕМАТИКА</div>
+                        <div class="quizz-desc">Квиз по Математике за 5-6 классы. Алгебра, Арифметика и так далее.</div>
+                    </div>
+                    <button class="quiz-btn">Пройти Квиз</button>
+                </div>
+            </div>
+            <div class="quizz-card">
+                <img src="2.jpg" alt="quizz 2" class="quizz-image">
+                <div class="quizz-content">
+                    <div>
+                        <div class="quizz-title">ЛИТЕРАТУРА</div>
+                        <div class="quizz-desc">Казахская и Русская Литература. Квиз включает вопросы по классикам и поэтам.</div>
+                    </div>
+                    <button class="quiz-btn">Пройти Квиз</button>
+                </div>
+            </div>
+            <div class="quizz-card">
+                <img src="3.png" alt="quizz 3" class="quizz-image">
+                <div class="quizz-content">
+                    <div>
+                        <div class="quizz-title">ХИМИЯ</div>
+                        <div class="quizz-desc">Квиз по Химии. Периодическая таблица Менделеева прилагается.</div>
+                    </div>
+                    <button class="quiz-btn">Пройти Квиз</button>
+                </div>
+            </div>
+            <div class="quizz-card">
+                <img src="1.png" alt="quizz 1" class="quizz-image">
+                <div class="quizz-content">
+                    <div>
+                        <div class="quizz-title">МАТЕМАТИКА</div>
+                        <div class="quizz-desc">Квиз по Математике за 5-6 классы. Алгебра, Арифметика и так далее.</div>
+                    </div>
+                    <button class="quiz-btn">Пройти Квиз</button>
+                </div>
+            </div>
+            <div class="quizz-card">
+                <img src="2.jpg" alt="quizz 2" class="quizz-image">
+                <div class="quizz-content">
+                    <div>
+                        <div class="quizz-title">ЛИТЕРАТУРА</div>
+                        <div class="quizz-desc">Казахская и Русская Литература. Квиз включает вопросы по классикам и поэтам.</div>
+                    </div>
+                    <button class="quiz-btn">Пройти Квиз</button>
+                </div>
+            </div>
+            <div class="quizz-card">
+                <img src="3.png" alt="quizz 3" class="quizz-image">
+                <div class="quizz-content">
+                    <div>
+                        <div class="quizz-title">ХИМИЯ</div>
+                        <div class="quizz-desc">Квиз по Химии. Периодическая таблица Менделеева прилагается.</div>
+                    </div>
+                    <button class="quiz-btn">Пройти Квиз</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Почему Мы -->
+    <div id="why-us" class="why-us-section">
+        <div class="why-title">Почему Мы</div>
+        <div class="why-text">
+            Мы предлагаем:
+            <ul>
+                <li>✅ БЕСПЛАТНЫЕ для Прохождения Квизы</li>
+                <li>📊 ВСЕ темы по школьным предметам</li>
+                <li>👨‍👩‍👧‍👦 Подходит для детей и для взрослых</li>
+                <li>⚡ Узнайте Результаты сразу и Получите Свои Оценки</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Команда -->
+    <div id="team" class="team-section">
+        <div class="team-title">Наша Команда</div>
+        <div class="team-members">
+            <div class="team-member">
+                <img src="pro1.jpg" alt="Участник 1">
+                <div class="member-name">Асыл</div>
+                <div class="member-role">Тестировщик</div>
+            </div>
+            <div class="team-member">
+                <img src="pro3.jpg" alt="Участник 3">
+                <div class="member-name">Дулат</div>
+                <div class="member-role">Автор</div>
+            </div>
+            <div class="team-member">
+                <img src="pro2.jpg" alt="Участник 2">
+                <div class="member-name">Степан</div>
+                <div class="member-role">Тестировщик</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Как пройти тест -->
+    <div id="test-info" class="test-info-section">
+        <div class="test-title">Как пройти тест</div>
+        <p>Посмотрите короткую видео-инструкцию ниже:</p>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/2At5nZWvdYo?si=h0u4F8ePIPgmRuie" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Подписка -->
+    <div id="subscribe" class="subscribe-section">
+        <div class="subscribe-title">Подписаться на Новости и Рассылки</div>
+        <input type="email" placeholder="Введите ваш Email">
+        <button>Подписаться</button>
+    </div>
+
+    <!-- О Нас -->
+    <div id="about" class="about-section">
+        <img src="about.avif" alt="О Нас" class="about-image">
+        <div class="about-content">
+            <div class="about-title">О Нас</div>
+            <div class="about-desc">
+                Данный сайт содержит всевозможные Квизы по Школьным темам для прохождения, можете проходить сами для того чтобы освежить накопленные с 11 лет знания, либо пройти вместе со своим чадом и проверить их уровень знания.
+            </div>
+        </div>
+    </div>
+
+    <section id="location" class="location-section fade-in-up">
+        <h2 class="location-title">Где Нас Найти</h2>
+        <p class="location-desc">Мы находимся в ТРЦ “Eurasia” в Астане — приходите познакомиться с нами лично!</p>
+        <div class="map-container">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2502.817285976497!2d71.47309249999999!3d51.148720399999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42458142baa07635%3A0x5728ef84632c9957!2sEurasia%20Shopping%20Mall!5e0!3m2!1sen!2skz!4v1760599228303!5m2!1sen!2skz"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>  
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+body {
+            margin: 0;
+            width: 100vw;
+            min-height: 100vh;
+            background: #C7F9CC; /* pastel green */
+            color: #222;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            background: #B7E4C7;
+            padding-top: 100px; /* Increased to prevent overlap */
+        }
+        .site-name {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #7EC8E3;
+            background: linear-gradient(90deg, #43EA6E 0%, #3B82F6 50%, #F472B6 100%);
+            padding: 16px 32px;
+            border-radius: 24px;
+            background-color: #57CC99;
+            display: inline-block;
+            box-shadow: 0 4px 24px rgba(67,234,110,0.25), 0 2px 8px #fff;
+            margin-bottom: 32px;
+            word-break: break-word;
+            text-align: center;
+            transition: transform 0.3s cubic-bezier(.25,1.25,.5,1.05), box-shadow 0.3s;
+            position: relative;
+            animation: glister 2s linear infinite alternate;
+        }
+
+        .site-name.bounce {
+                animation: bounceTitle 2.5s cubic-bezier(.25,1.25,.5,1.05);
+        }
+
+        @keyframes bounceTitle {
+            0%   { transform: translateY(0); }
+            20%  { transform: translateY(-40px); }
+            40%  { transform: translateY(0); }
+            60%  { transform: translateY(-20px); }
+            80%  { transform: translateY(0); }
+            100% { transform: translateY(0); }
+        }
+        .site-name:hover {
+            transform: scale(1.08);
+            animation: glister-fast 0.8s linear infinite alternate;
+            box-shadow: 0 0 32px 8px #fff, 0 4px 24px rgba(67, 234, 110, 0.25), 0 2px 8px #fff;
+        }
+        @keyframes glister {
+            0% { filter: brightness(1) drop-shadow(0 0 0px #fff); }
+            50% { filter: brightness(1.2) drop-shadow(0 0 12px #fff); }
+            100% { filter: brightness(1) drop-shadow(0 0 0px #fff); }
+        }
+
+        @keyframes glister-fast {
+            0% { filter: brightness(1.1) drop-shadow(0 0 0px #fff); }
+            50% { filter: brightness(1.5) drop-shadow(0 0 32px #fff); }
+            100% { filter: brightness(1.1) drop-shadow(0 0 0px #fff); }
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+        }
+        .nav-btn {
+            background: #A7D8B8;
+            color: #222;
+            border: none;
+            padding: 18px 36px;
+            font-size: 1.3rem;
+            border-radius: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .nav-btn:hover {
+            background: #81C784;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            background: #B7E4C7;
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 18px 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .quizzes {
+            background: #E9F5DB;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .featured-quizzes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 32px;
+            padding: 40px 5vw;
+            padding-top: 100px; /* Increased to prevent overlap */
+            min-height: 100vh; /* Full screen height */
+            background: #E9F5DB;
+        }
+        .quizz-card {
+            background: #E9F5DB;
+            border-radius: 18px;
+            width: 420px;
+            max-width: 100%;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            position: relative;
+            transition: transform 0.25s cubic-bezier(.25,1.25,.5,1.05), box-shadow 0.25s;
+        }
+        .quizz-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 32px rgba(67, 234, 110, 0.18), 0 2px 8px #fff;
+            z-index: 2;
+        }
+        .quizz-image {
+            width: 100%;
+            max-width: 420px;
+            height: 140px;
+            object-fit: cover;
+            background: #B7E4C7;
+            display: block;
+            margin: 0 auto;
+        }
+        .quizz-content {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .quizz-titlee {
+            font-size: 5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #388E3C;
+            text-align: center;
+        }
+        .quizz-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #388E3C;
+        }
+        .quizz-desc {
+            font-size: 1rem;
+            color: #4F4F4F;
+            margin-bottom: 20px;
+        }
+        .quiz-btn {
+            align-self: flex-end;
+            background: #81C784;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+        .quiz-btn:hover {
+            background: #388E3C;
+        }
+        .about-section {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Full screen height */
+            background: #B7E4C7;
+            padding: 4rem 2rem;
+            padding-top: 100px; /* Increased to prevent overlap */
+            gap: 3rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+        }
+        .about-image {
+            width: 350px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: crazy-scale 1.2s infinite cubic-bezier(.5,-0.5,.5,1.5);
+        }
+        @keyframes crazy-scale {
+            0%   { transform: scale(1); }
+            10%  { transform: scale(1.2); }
+            20%  { transform: scale(0.8); }
+            35%  { transform: scale(1.4); }
+            50%  { transform: scale(0.7); }
+            65%  { transform: scale(1.3); }
+            80%  { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        .about-content {
+            max-width: 600px;
+        }
+        .about-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #388E3C;
+        }
+        .about-desc {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #4F4F4F;
+        }
+        .site-desc {
+            font-size: 1.5rem;
+            color: #388E3C;
+            margin-top: 16px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .site-name {
+                font-size: 2.5rem;
+                padding: 12px 16px;
+            }
+            .nav-buttons {
+                gap: 16px;
+            }
+            .featured-quizzes {
+                gap: 20px;
+                padding: 24px 2vw;
+            }
+            .quizz-card {
+                width: 100%;
+                max-width: 400px;
+                height: auto;
+            }
+            .quizz-image {
+                max-width: 100%;
+                height: 120px;
+            }
+            .about-section {
+                flex-direction: column;
+                padding: 20px;
+                gap: 2rem;
+            }
+            .about-image {
+                width: 220px;
+                height: 220px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .site-name {
+                font-size: 1.5rem;
+                padding: 8px 8px;
+            }
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            .featured-quizzes {
+                gap: 12px;
+                padding: 12px 1vw;
+            }
+            .quizz-card {
+                max-width: 100%;
+                min-width: 0;
+                height: auto;
+            }
+            .quizz-image {
+                height: 80px;
+            }
+            .about-section {
+                padding: 10px;
+                gap: 1rem;
+            }
+            .about-image {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 12px;
+            }
+            .about-title {
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+            }
+            .about-desc {
+                font-size: 1rem;
+            }
+        }
+        /* Меню-гамбургер */
+.dropdown-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    text-align: center;
+}
+
+.menu-icon {
+    font-size: 2rem;
+    background: #A7D8B8;
+    color: #222;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+}
+
+.menu-icon:hover {
+    background: #81C784;
+}
+
+/* Выпадающее меню */
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    background: #E9F5DB;
+    border-radius: 12px;
+    margin-top: 12px;
+    padding: 12px 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+}
+
+.dropdown-link {
+    text-decoration: none;
+    color: #222;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.dropdown-link:hover {
+    background: #C7F9CC;
+}
+
+/* Адаптация под мобильные */
+@media (max-width: 600px) {
+    .menu-icon {
+        font-size: 1.5rem;
+        padding: 8px 16px;
+    }
+
+    .dropdown-menu {
+        width: 160px;
+    }
+
+    .dropdown-link {
+        font-size: 1rem;
+        padding: 10px 16px;
+    }
+}
+/* Header background image */
+.header {
+    background: url('header-bg.jpg') center/cover no-repeat;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+
+/* Почему Мы */
+.why-us-section {
+    background: #B7E4C7;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+.why-title {
+    font-size: 5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #388E3C;
+}
+.why-text ul {
+    list-style: none;
+    padding: 0;
+}
+.why-text li {
+    font-size: 1.2rem;
+    margin: 8px 0;
+}
+
+/* Команда */
+.team-section {
+    background: #E9F5DB;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+.team-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #388E3C;
+}
+.team-members {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.team-member {
+    background: #E9F5DB;
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 200px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.team-member img {
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.member-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+.member-role {
+    color: #4F4F4F;
+}
+
+/* Видео */
+.test-info-section {
+    padding: 4rem 2rem;
+    background: #B7E4C7;
+    text-align: center;
+}
+.test-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #388E3C;
+    margin-bottom: 1rem;
+}
+.video-container iframe {
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+/* Подписка */
+.subscribe-section {
+    background: #E9F5DB;
+    text-align: center;
+    padding: 4rem 2rem;
+}
+.subscribe-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #388E3C;
+    margin-bottom: 1rem;
+}
+.subscribe-section input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+    margin-right: 10px;
+}
+.subscribe-section button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    background: #81C784;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.subscribe-section button:hover {
+    background: #388E3C;
+}
+
+/* Где Нас Найти */
+.location-section {
+    background: #E9F5DB;
+    padding: 4rem 2rem;
+    text-align: center;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.05);
+}
+
+.location-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #388E3C;
+    margin-bottom: 1rem;
+}
+
+.location-desc {
+    font-size: 1.2rem;
+    color: #4F4F4F;
+    margin-bottom: 2rem;
+}
+
+.map-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.map-container iframe {
+    width: 80%;
+    max-width: 800px;
+    height: 400px;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .location-title {
+        font-size: 1.8rem;
+    }
+    .location-desc {
+        font-size: 1rem;
+    }
+    .map-container iframe {
+        width: 100%;
+        height: 250px;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.quizz-card');
+    cards.forEach((card, i) => {
+        setTimeout(() => {
+            card.classList.add('fade-in-up');
+        }, 200 * i);
+    });
+    // Bounce animation for title only
+    const siteName = document.querySelector('.site-name');
+        if (siteName) {
+            siteName.classList.add('bounce');
+            setTimeout(() => {
+                siteName.classList.remove('bounce');
+            }, 2500);
+        }
+});
+function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu.style.display === 'flex') {
+            menu.style.display = 'none';
+        } else {
+            menu.style.display = 'flex';
+        }
+    }
+
+    // Закрывать меню при клике вне его
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('dropdownMenu');
+        const icon = document.querySelector('.menu-icon');
+        if (!menu.contains(event.target) && !icon.contains(event.target)) {
+            menu.style.display = 'none';
+        }
+    });
