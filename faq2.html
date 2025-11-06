@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    :root {
+      --dark-bg: #121212;
+      --light-bg: #1e1e1e;
+      --accent: #00adb5;
+      --text: #eaeaea;
+      --muted: #777;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--dark-bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(18, 18, 18, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+      border-bottom: 1px solid #222;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    main {
+      padding-top: 90px;
+    }
+
+    /* -------- Horizontal Accordion -------- */
+    .faq-section {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--light-bg);
+      padding: 2rem 1rem;
+    }
+
+    .faq-section h2 {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .accordion-horizontal {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      height: 420px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .accordion-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #2b2b2b;
+      transition: flex 0.6s ease, background 0.4s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .accordion-item:not(:last-child) {
+      border-right: 1px solid #222;
+    }
+
+    .accordion-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--muted);
+      opacity: 0.4;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .accordion-item.active .accordion-number {
+      opacity: 0;
+    }
+
+    .accordion-header {
+      opacity: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      transition: opacity 0.4s 0.2s;
+      color: var(--accent);
+    }
+
+    .accordion-content {
+      opacity: 0;
+      transition: opacity 0.4s 0.3s;
+      text-align: center;
+      max-width: 85%;
+      color: var(--text);
+    }
+
+    .accordion-item.active {
+      flex: 4;
+      background: #202020;
+    }
+
+    .accordion-item.active .accordion-header,
+    .accordion-item.active .accordion-content {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .accordion-horizontal {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .accordion-item {
+        flex: unset;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #222;
+        height: 80px;
+        overflow: hidden;
+        transition: height 0.5s ease;
+      }
+
+      .accordion-item.active {
+        height: 250px;
+      }
+
+      .accordion-number {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+      }
+
+      .accordion-header,
+      .accordion-content {
+        opacity: 1;
+        text-align: left;
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>My Website</h1>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="about.html">О нас</a>
+      <a href="faq.html" style="color: var(--accent)">FAQ</a>
+      <a href="contact.html">Контакты</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="faq-section">
+      <h2>FAQ</h2>
+      <div class="accordion-horizontal">
+        <div class="accordion-item active">
+          <div class="accordion-number">01</div>
+          <div class="accordion-header">Что делает ваш сервис?</div>
+          <div class="accordion-content">
+            <p>Мы предоставляем инструменты и обучение для веб-разработчиков и дизайнеров.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-number">02</div>
+          <div class="accordion-header">Где вас найти?</div>
+          <div class="accordion-content">
+            <p>Наш офис находится в Алматы, но команда распределена по всему миру.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-number">03</div>
+          <div class="accordion-header">Есть ли мобильная версия?</div>
+          <div class="accordion-content">
+            <p>Да, сайт оптимизирован под мобильные устройства с шириной экрана менее 768px.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-number">04</div>
+          <div class="accordion-header">Как с вами связаться?</div>
+          <div class="accordion-content">
+            <p>Свяжитесь с нами через форму обратной связи или по адресу support@example.com.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-number">05</div>
+          <div class="accordion-header">Можно ли сотрудничать с вами?</div>
+          <div class="accordion-content">
+            <p>Да, мы открыты для партнёрств и совместных проектов.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const items = document.querySelectorAll('.accordion-item');
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        items.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
