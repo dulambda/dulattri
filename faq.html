@@ -1,38 +1,12 @@
-Хорошо — сделал аккуратно и вдумчиво. Ниже — готовая страница FAQ в стиле твоего сайта (пастельные зелёные тона, крупный заголовок с градиентом, аккуратные карточки, гамбургер-меню на месте).
-Особое внимание:
-
-Горизонтальный FAQ-аккордеон: 10 вопросов, «фэнси» анимация (плавный масштаб + сдвиг контента + плавное появление текста и иконки).
-
-На десктопе секция открывается горизонтально (ширина), остальные сжимаются.
-
-На мобильных (<768px) аккордеон превращается в вертикальный список, пункт открывается до края экрана.
-
-JS вычисляет точную ширину открытой секции (по процентам), чтобы корректно работать при любом количестве пунктов.
-
-Доступность: keyboard navigation (ArrowLeft/ArrowRight/Enter/Escape), aria-expanded.
-
-
-OnePageScroll: прокрутка между секциями через wheel (с дебаунсом) и тач-перетаскивание (touchstart/touchmove/touchend) — работает без внешних библиотек.
-
-Видео: HTML5 video с кастомными контролами (play/pause/toggle mute/seek) — использует Media API.
-
-Google Map: контейнер + initMap (замени YOUR_API_KEY на свой ключ).
-
-
-Скопируй файл как faq.html в корень проекта; он использует часть стилей из твоего style.css (подключён), но также содержит локальные стили чтобы точно соответствовать оформлению и не ломать текущую страницу.
-
-
----
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
   <title>FAQ — Мир Квизззов</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css"><!-- твой глобальный стиль -->
+  <link rel="stylesheet" href="style.css">
   <style>
-    /* --- PAGE-SPECIFIC: сохраняем общую палитру и читаемость --- */
+
     :root{
       --bg:#C7F9CC;
       --panel:#E9F5DB;
@@ -42,9 +16,8 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       --dark:#222;
     }
 
-    html,body{height:100%;margin:0;font-family:Arial, sans-serif;color:var(--dark);background:var(--bg);overflow:hidden;}
+  html,body{height:100%;margin:0;font-family:Arial, sans-serif;color:var(--dark);background:var(--bg);overflow:auto;}
 
-    /* --- top nav (similar to your site) --- */
     .navbar-fake{
       position:fixed;left:0;right:0;top:0;z-index:1200;
       display:flex;justify-content:center;padding:12px 0;
@@ -58,27 +31,31 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       color:white;box-shadow:0 4px 24px rgba(67,234,110,0.12);
     }
 
-    /* --- OnePageScroll wrapper --- */
-    .wrapper{height:100vh;width:100vw;overflow:hidden;position:relative;}
-    .main-content{transition:transform 0.8s cubic-bezier(.22,.9,.38,1);height:100vh;}
-    section{height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 3rem;box-sizing:border-box;}
+    .dropdown-container{position:fixed;top:12px;right:12px;z-index:1400;}
+    .menu-icon{display:inline-block;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#ffffff,#f0f0f0);color:#155724;cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.04)}
+    .dropdown-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:160px;background:white;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.12);overflow:hidden;display:none}
+    .dropdown-menu .dropdown-link,.dropdown-menu .nav-btn{display:block;padding:10px 12px;color:#155724;text-decoration:none;border-bottom:1px solid rgba(0,0,0,0.04)}
+    .dropdown-menu .dropdown-link:hover{background:linear-gradient(90deg,rgba(67,234,110,0.06),rgba(59,130,246,0.04))}
+
+   .wrapper{height:auto;width:100%;overflow:visible;position:relative;}
+   .main-content{transition:none;height:auto;min-height:100vh;}
+  section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 3rem;box-sizing:border-box;}
     .section-inner{width:100%;max-width:1200px;margin:0 auto;}
 
     h1.page-title{
-      font-size:3.2rem;text-align:center;margin-bottom:1rem;
-      display:inline-block;padding:12px 22px;border-radius:24px;
+      font-size:3.2rem;text-align:center;margin:0 auto 1rem auto;
+      display:block;padding:12px 22px;border-radius:24px;max-width:900px;
       color:#fff;background:linear-gradient(90deg,#43EA6E,#3B82F6 50%,#F472B6);
       box-shadow:0 8px 32px rgba(67,234,110,0.12);
     }
 
-    /* ========== HORIZONTAL ACCORDION (FAQ) ========== */
     .faq-wrap{display:flex;flex-direction:column;gap:20px;align-items:center;}
     .faq-instructions{
       font-size:0.95rem;color:var(--muted);max-width:900px;text-align:center;margin-bottom:8px;
     }
 
     .accordion-horizontal{
-      --open-percent:58; /* default open percentage (desktop) */
+      --open-percent:58; 
       width:100%;
       height:420px;
       display:flex;
@@ -113,20 +90,32 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
     }
 
     .accordion-head{
-      flex:0 0 64px;
+      flex:0 0 84px;
       display:flex;align-items:center;justify-content:center;
       background:linear-gradient(180deg, rgba(67,234,110,0.12), rgba(59,130,246,0.06));
-      font-weight:700;color:#0b2a1a;padding:8px 12px;
-      writing-mode:horizontal-tb;text-align:center;
-      user-select:none;
+      font-weight:700;color:#0b2a1a;padding:8px 10px;box-sizing:border-box;
+      writing-mode:horizontal-tb;text-align:center;overflow:hidden;white-space:nowrap;
+      user-select:none;transition:background .18s ease, transform .12s ease;
+    }
+    .accordion-head > span{display:inline-flex;align-items:center;gap:10px;justify-content:center;min-width:0}
+
+    @media(min-width:769px){
+      .accordion-item:not(.active) .accordion-head > span > span:nth-child(2){
+        display:none !important;
+        width:0;opacity:0;overflow:hidden;
+      }
+      .accordion-item:not(.active) .accordion-head{cursor:pointer}
+      .accordion-item:not(.active):hover .accordion-head{transform:translateY(-3px);background:linear-gradient(180deg, rgba(67,234,110,0.16), rgba(59,130,246,0.08));}
     }
 
-    /* fancy icon */
+
     .faq-icon{
-      width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-right:8px;
+      width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-right:0;
       background:linear-gradient(180deg,#57CC99,#3B82F6);
-      color:white;font-weight:bold;box-shadow:0 4px 16px rgba(0,0,0,0.12);
+      color:white;font-weight:800;font-size:1rem;box-shadow:0 6px 20px rgba(0,0,0,0.14);
+      transition:transform .12s ease,box-shadow .12s ease;
     }
+    .accordion-item.active .faq-icon{transform:scale(1.03);box-shadow:0 10px 28px rgba(59,130,246,0.18)}
 
     .accordion-body{
       padding:18px;
@@ -154,16 +143,13 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       color:var(--muted);line-height:1.5;font-size:0.98rem;
     }
 
-    /* subtle gradient separator */
     .accordion-footer{margin-top:auto;padding:8px 0 0;width:100%;display:flex;justify-content:flex-end;align-items:center;font-size:0.85rem;color:#666;}
 
-    /* borders when closed (desktop) */
     @media(min-width:769px){
-      .accordion-item{flex:1 1 calc((100% - 11*12px)/10);} /* fallback: equal split */
-      .accordion-item.active{ /* JS will set exact flex-basis inline for precise behaviour */ box-shadow:0 14px 40px rgba(67,234,110,0.12); }
+      .accordion-item{flex:1 1 calc((100% - 11*12px)/10);} 
+      .accordion-item.active{  box-shadow:0 14px 40px rgba(67,234,110,0.12); }
     }
 
-    /* MOBILE: vertical accordion, open to full width (edge) */
     @media(max-width:768px){
       .accordion-horizontal{flex-direction:column;height:auto;padding:6px;}
       .accordion-item{width:100%;display:block;transition:height 420ms cubic-bezier(.2,.9,.25,1);border-radius:12px;margin-bottom:8px;overflow:hidden;}
@@ -172,52 +158,64 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       .accordion-item.active .accordion-body{height:auto;padding-bottom:16px;}
     }
 
-    /* small screens tweaks */
+
     @media(max-width:420px){
       h1.page-title{font-size:1.6rem;padding:8px 12px;}
       .accordion-head{flex:0 0 56px;font-size:0.95rem;}
       .accordion-body{font-size:0.95rem;}
     }
 
-    /* --- Video section styling (in site style) --- */
+
     .video-player{
-      display:flex;flex-direction:column;align-items:center;gap:12px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
     }
-    .video-card{background:var(--panel);padding:18px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.06);width:90%;max-width:900px;}
-    .video-card video{width:100%;height:auto;border-radius:8px;background:#000;display:block;}
-    .controls-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+    .video-card{background:var(--panel);padding:18px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.06);width:90%;max-width:900px;margin:0 auto}
+    .video-card video{width:100%;max-width:900px;height:auto;border-radius:8px;background:#000;display:block;margin:0 auto}
+    .controls-row{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px;}
 
-    /* --- Map area --- */
-    .map-card{width:90%;max-width:1000px;height:520px;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04);}
+    .btn-control{appearance:none;border:0;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#43EA6E,#3B82F6);color:white;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(59,130,246,0.12);transition:transform .12s ease,opacity .12s ease}
+    .btn-control:active{transform:translateY(1px) scale(.995)}
+    .btn-control.secondary{background:linear-gradient(90deg,#E9F5DB,#C7F9CC);color:#155724;box-shadow:none}
 
-    /* small helper */
+
+    .progress-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;max-width:640px}
+  #videoProgress{width:100%;appearance:none;-webkit-appearance:none;height:8px;border-radius:8px;background:linear-gradient(90deg,#e6e6e6,#f5f5f5);outline:none}
+  
+    #videoProgress::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#3B82F6;box-shadow:0 4px 10px rgba(59,130,246,0.3);cursor:pointer}
+    #videoProgress::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#3B82F6;border:0}
+    .time-label{font-size:0.9rem;color:var(--muted)}
+
+
+    .section-title{font-size:2.0rem;font-weight:700;text-align:center;display:block;margin:0 auto 12px auto;max-width:900px;color:#155724}
+
+  .map-card{width:90%;max-width:1000px;height:520px;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04);position:relative}
+
+
     .muted{color:var(--muted)}
   </style>
 </head>
 <body>
-
-  <!-- top nav like on your site -->
-  <div class="navbar-fake">
-    <div class="site-name-small">Мир Квизззов — FAQ</div>
-  </div>
-
   <div class="wrapper" id="onepage-wrapper">
     <div class="main-content" id="mainContent">
 
-      <!-- SECTION 1: FAQ / Horizontal accordion -->
+    <div class="dropdown-container">
+      <div class="menu-icon" onclick="toggleMenu()">☰ Меню</div>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="index.html" class="dropdown-link">Главная</a>
+        <a href="reviews.html" class="dropdown-link">Отзывы</a>
+        <a href="zakazy.html" class="dropdown-link">Заказы</a>
+        <a href="faq.html" class="dropdown-link">Часто Задаваемые Вопросы</a>
+      </div>
+    </div>
+
       <section id="section-faq" aria-label="FAQ">
         <div class="section-inner">
-          <h1 class="page-title">Тема практического занятия: Завершение проекта по верстке</h1>
-          <p class="faq-instructions muted">
-            Задание: реализовать горизонтальный аккордеон (10 вопросов). На десктопе пункты открываются по ширине,
-            на мобильных — открываются до края окна. Также реализован OnePageScroll, HTML5 видео и Google-карта ниже.
-          </p>
+          <h1 class="page-title">Часто Задаваемые Вопросы</h1>
+          
 
           <div class="faq-wrap">
             <div class="accordion-horizontal" id="faqAccordion" role="tablist" aria-multiselectable="false">
-              <!-- 10 items -->
-              <!-- Каждый item имеет data-index и aria атрибуты -->
-              <!-- 1 -->
+
               <article class="accordion-item active" data-index="0" role="tabpanel" aria-expanded="true" tabindex="0">
                 <div class="accordion-head">
                   <span style="display:inline-flex;align-items:center;">
@@ -228,7 +226,7 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
                 <div class="accordion-body">
                   <div class="accordion-question">Что такое Мир Квизззов?</div>
                   <div class="accordion-answer">Это образовательный проект с коллекцией квизов и тестов по школьным предметам для повторения и проверки знаний.</div>
-                  <div class="accordion-footer muted">Кликните, чтобы открыть/закрыть. Поддержка клавиатуры: ← → Enter</div>
+                  <div class="accordion-footer muted"></div>
                 </div>
               </article>
 
@@ -363,24 +361,27 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
         </div>
       </section>
 
-      <!-- SECTION 2: Video player -->
       <section id="section-video" aria-label="Видео-презентация">
         <div class="section-inner">
-          <h2 style="text-align:center;margin-bottom:12px;">Видео-презентация проекта</h2>
+          <h2 class="section-title">Видео</h2>
           <div class="video-card">
             <div class="video-player">
-              <!-- заменяй src на реальный файл -->
+              
               <video id="projectVideo" preload="metadata" poster="video-poster.jpg">
                 <source src="video.mp4" type="video/mp4">
                 Ваш браузер не поддерживает видео.
               </video>
 
               <div class="controls-row">
-                <button id="btnPlay">Play ▶</button>
-                <button id="btnPause">Pause ⏸</button>
-                <button id="btnStop">Stop ⏹</button>
-                <button id="btnMute">Mute 🔈</button>
-                <label class="muted" style="margin-left:auto;">Прогресс: <span id="timeLabel">0:00 / 0:00</span></label>
+                <button id="btnPlay" class="btn-control">▶ Play</button>
+                <button id="btnPause" class="btn-control secondary">⏸ Pause</button>
+                <button id="btnStop" class="btn-control secondary">⏹ Stop</button>
+                <button id="btnMute" class="btn-control secondary">🔈 Mute</button>
+
+                <div class="progress-wrap" aria-hidden="false">
+                  <input id="videoProgress" type="range" min="0" max="100" step="0.1" value="0" aria-label="Прогресс видео">
+                  <div class="time-label muted"><span id="timeLabel">0:00 / 0:00</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -390,10 +391,7 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       <!-- SECTION 3: Google map -->
       <section id="section-map" aria-label="Где нас найти">
         <div class="section-inner" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-          <h2 style="margin-bottom:6px;">Где Нас Найти</h2>
-          <p class="muted" style="max-width:900px;text-align:center;">
-            ТРЦ “Eurasia”, Астана — интерактивная карта ниже. Замените API-ключ внизу на ваш собственный.
-          </p>
+          <h2 class="section-title" style="margin-bottom:6px;">Где Нас Найти</h2>
           <div class="map-card" id="map"></div>
         </div>
       </section>
@@ -433,14 +431,13 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
         });
       }
 
-      // apply mobile layout - reset inline flex
+
       function applySizesMobile(){
         items.forEach(it => {
           it.style.flex = '';
         });
       }
 
-      // activate index
       function activate(idx, focus=false){
         if(idx < 0 || idx >= total) return;
         items.forEach((it,i)=>{
@@ -455,17 +452,14 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
         } else applySizesMobile();
       }
 
-      // init: ensure first active
       let activeIndex = 0;
       activate(activeIndex);
 
-      // click handlers
+
       items.forEach((it, i) => {
         it.addEventListener('click', (e)=>{
-          // if clicked active on desktop -> keep it open (or toggle if want)
+
           if(activeIndex === i){
-            // toggle behaviour: keep single open — do nothing,
-            // but allow collapse on mobile by toggling (nice UX)
             if(window.innerWidth <= 768){
               const isActive = it.classList.contains('active');
               if(isActive){ it.classList.remove('active'); it.setAttribute('aria-expanded','false'); activeIndex = -1; }
@@ -477,7 +471,6 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
           activate(i,true);
         });
 
-        // keyboard accessibility
         it.addEventListener('keydown', (ev)=>{
           if(ev.key === 'ArrowRight'){
             ev.preventDefault();
@@ -489,7 +482,6 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
             activeIndex = prev; activate(activeIndex,true);
           } else if(ev.key === 'Enter' || ev.key === ' '){
             ev.preventDefault();
-            // toggle on mobile only
             if(window.innerWidth <= 768){
               const isActive = it.classList.contains('active');
               if(isActive){ it.classList.remove('active'); it.setAttribute('aria-expanded','false'); activeIndex = -1;}
@@ -499,89 +491,25 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
         });
       });
 
-      // reflow on resize
       let resizeTimer;
       window.addEventListener('resize', ()=>{
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(()=>{
           if(window.innerWidth > 768){
-            // ensure some active
+
             if(activeIndex < 0) activeIndex = 0;
             applySizesDesktop(activeIndex);
           } else {
-            // mobile: clear inline flex
+
             applySizesMobile();
           }
         },120);
       });
 
-      // accessibility: if focus leaves container, nothing — ok
-      // initial application
+
       if(window.innerWidth > 768) applySizesDesktop(activeIndex);
     })();
 
-    /***********************
-     * ONE PAGE SCROLL (wheel + touch)
-     ***********************/
-    (function(){
-      const content = document.getElementById('mainContent');
-      const sections = Array.from(content.querySelectorAll('section'));
-      let current = 0;
-      let running = false;
-      const LOCK_MS = 900; // debounce lock
-
-      function clamp(v){ return Math.max(0, Math.min(v, sections.length-1)); }
-      function goTo(index){
-        index = clamp(index);
-        if(index === current) return;
-        current = index;
-        content.style.transform = `translateY(-${current * 100}vh)`;
-      }
-
-      // wheel handler with debounce
-      window.addEventListener('wheel', (e)=>{
-        if(running) return;
-        running = true;
-        setTimeout(()=> running = false, LOCK_MS);
-        const dir = e.deltaY;
-        if(dir > 0) goTo(current+1);
-        else if(dir < 0) goTo(current-1);
-      }, {passive:true});
-
-      // touch handling (simple swipe up/down)
-      let startY = null;
-      window.addEventListener('touchstart',(e)=>{
-        if(e.touches && e.touches[0]) startY = e.touches[0].clientY;
-      }, {passive:true});
-
-      window.addEventListener('touchend',(e)=>{
-        if(startY === null) return;
-        // get last touch
-        const touch = (e.changedTouches && e.changedTouches[0]) || null;
-        if(!touch){ startY = null; return; }
-        const dy = startY - touch.clientY;
-        if(Math.abs(dy) > 50){
-          if(dy > 0) goTo(current+1); else goTo(current-1);
-        }
-        startY = null;
-      }, {passive:true});
-
-      // keyboard navigation for sections
-      window.addEventListener('keydown', (e)=>{
-        if(e.key === 'PageDown' || e.key === 'ArrowDown'){
-          goTo(current+1);
-        } else if(e.key === 'PageUp' || e.key === 'ArrowUp'){
-          goTo(current-1);
-        }
-      });
-
-      // ensure initial transform
-      content.style.transform = `translateY(0)`;
-    })();
-
-    /***********************
-     * VIDEO CONTROLS (HTML5 API)
-     ***********************/
     (function(){
       const video = document.getElementById('projectVideo');
       const btnPlay = document.getElementById('btnPlay');
@@ -589,6 +517,7 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       const btnStop = document.getElementById('btnStop');
       const btnMute = document.getElementById('btnMute');
       const timeLabel = document.getElementById('timeLabel');
+      const progress = document.getElementById('videoProgress');
 
       function fmt(sec){
         if(!isFinite(sec)) return '0:00';
@@ -596,27 +525,58 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
         return m + ':' + (s<10?'0':'') + s;
       }
 
-      btnPlay.addEventListener('click', ()=> video.play());
-      btnPause.addEventListener('click', ()=> video.pause());
-      btnStop.addEventListener('click', ()=> { video.pause(); video.currentTime = 0; });
-      btnMute.addEventListener('click', ()=> { video.muted = !video.muted; btnMute.textContent = video.muted ? 'Unmute 🔇' : 'Mute 🔈'; });
 
-      video.addEventListener('timeupdate', ()=>{
-        timeLabel.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
-      });
+      if(btnPlay) btnPlay.addEventListener('click', ()=> { if(video) video.play(); });
+      if(btnPause) btnPause.addEventListener('click', ()=> { if(video) video.pause(); });
+      if(btnStop) btnStop.addEventListener('click', ()=> { if(video){ video.pause(); video.currentTime = 0; } });
+      if(btnMute) btnMute.addEventListener('click', ()=> { if(video){ video.muted = !video.muted; btnMute.textContent = video.muted ? 'Unmute 🔇' : '🔈 Mute'; } });
 
-      // progressive enhancement: keyboard shortcuts
+
+      if(progress && video){
+        video.addEventListener('loadedmetadata', ()=>{
+          try{
+            if(isFinite(video.duration) && video.duration > 0){
+              progress.max = 100;
+              progress.value = 0;
+            }
+          }catch(e){}
+        });
+
+        video.addEventListener('timeupdate', ()=>{
+          if(isFinite(video.duration) && video.duration > 0){
+            const pct = (video.currentTime / video.duration) * 100;
+            progress.value = pct;
+          }
+          timeLabel.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+        });
+
+        let seeking = false;
+        progress.addEventListener('input', (e)=>{
+          seeking = true;
+          if(video.duration){
+            const val = parseFloat(e.target.value);
+            video.currentTime = (val / 100) * video.duration;
+          }
+        });
+        progress.addEventListener('change', ()=>{ seeking = false; });
+      } else if(video){
+
+        video.addEventListener('timeupdate', ()=>{
+          timeLabel.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+        });
+      }
+
       window.addEventListener('keydown', (e)=>{
-        if(e.key === 'k'){ /* toggle play/pause */ video.paused ? video.play() : video.pause(); }
-        if(e.key === 'm'){ video.muted = !video.muted; }
+        if(!video) return;
+        if(e.key === 'k'){  video.paused ? video.play() : video.pause(); }
+        if(e.key === 'm'){ video.muted = !video.muted; if(btnMute) btnMute.textContent = video.muted ? 'Unmute 🔇' : '🔈 Mute'; }
+        if(e.key === 'ArrowRight') video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
+        if(e.key === 'ArrowLeft') video.currentTime = Math.max(0, video.currentTime - 5);
       });
     })();
 
-    /***********************
-     * GOOGLE MAP INIT
-     ***********************/
+
     function initMap(){
-      // Fallback coords: Astana - Eurasia Mall (example)
       const coords = { lat: 51.14872, lng: 71.47309 };
       const mapEl = document.getElementById('map');
       if(!mapEl) return;
@@ -628,7 +588,6 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
       const marker = new google.maps.Marker({ position: coords, map });
     }
 
-    // If Google Maps script fails to load, show message
     window.addEventListener('error', (e)=>{
       if(e.target && e.target.tagName === 'SCRIPT'){
         const mapEl = document.getElementById('map');
@@ -637,28 +596,61 @@ Google Map: контейнер + initMap (замени YOUR_API_KEY на сво�
     }, true);
   </script>
 
-  <!-- Google Maps API: замените YOUR_API_KEY на ваш ключ -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+  <script src="script.js"></script>
+
+
+  <script>
+
+    (function(){
+      const GM_API_KEY = 'YOUR_API_KEY';
+      const coords = { lat: 51.14872, lng: 71.47309 };
+
+      const originalInit = window.initMap;
+      window.initMap = function(){
+        try{
+          if(typeof originalInit === 'function') originalInit();
+          const mapEl = document.getElementById('map');
+          if(!mapEl) return;
+          if(window.google && window.google.maps){
+            window._faqMap = new google.maps.Map(mapEl, { center: coords, zoom: 13, disableDefaultUI: false });
+            window._faqMarker = new google.maps.Marker({ position: coords, map: window._faqMap });
+          }
+        }catch(err){
+          console.warn('initMap fallback error', err);
+        }
+      };
+
+      window._onSectionChange = function(index){
+        if(index !== 2) return;
+        if(window._faqMap && window.google && window.google.maps){
+          setTimeout(()=>{
+            try{ google.maps.event.trigger(window._faqMap, 'resize'); window._faqMap.setCenter(coords); }catch(e){/* ignore */}
+          }, 350);
+        }
+      };
+
+      if(GM_API_KEY && GM_API_KEY !== 'YOUR_API_KEY'){
+        const s = document.createElement('script');
+        s.async = true; s.defer = true;
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GM_API_KEY)}&callback=initMap`;
+        s.onerror = function(){
+          const el = document.getElementById('map');
+          if(el) el.innerHTML = '<div style="padding:20px;text-align:center;color:#666">Не удалось загрузить карту по API-ключу. Проверьте ключ.</div>';
+        };
+        document.head.appendChild(s);
+      } else {
+        const mapEl = document.getElementById('map');
+        if(mapEl){
+          mapEl.innerHTML = `
+            <iframe
+              src="https://www.google.com/maps?q=${coords.lat},${coords.lng}&z=15&output=embed"
+              style="width:100%;height:100%;border:0;"
+              allowfullscreen="" loading="lazy"></iframe>
+
+          `;
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
-
-
----
-
-Если хочешь дальше улучшить (предложения, которые я могу прямо сейчас вкинуть в код):
-
-1. Анимация раскрытия с использованием clip-path — выглядит ещё более «современно».
-
-
-2. Добавить микро-анимацию иконки (пульсация) у активного пункта.
-
-
-3. Поддержка deep linking: #faq-3 открывает 3-й пункт при загрузке.
-
-
-4. Сохранение последнего открытого пункта в localStorage.
-
-
-5. Подключить touchSwipe.js / MobileDetect если нужно более гладкое поведение свайпа и
-
-

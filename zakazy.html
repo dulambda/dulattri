@@ -304,7 +304,6 @@
     </style>
 </head>
 <body>
-    <!-- простая навигация + кнопка открытия fullscreen меню -->
     <div style="padding:18px; display:flex;gap:12px; align-items:center; justify-content:space-between;">
         <div class="site-name" style="font-size:1.6rem;">Мир Квизззов — Заказы</div>
         <div style="display:flex; gap:8px;">
@@ -312,12 +311,12 @@
         </div>
     </div>
 
-    <!-- Fullscreen menu -->
     <div id="fullmenu" class="fullmenu" aria-hidden="true">
         <button class="close-btn" id="closeFullMenu">Закрыть ✕</button>
             <a href="index.html" class="dropdown-link">Главная</a>
             <a href="reviews.html" class="dropdown-link">Отзывы</a>
             <a href="zakazy.html" class="dropdown-link">Заказы</a>
+            <a href="faq.html" class="dropdown-link">Часто Задаваемые Вопросы</a>
     </div>
 
     <main>
@@ -446,21 +445,21 @@
 
             <form id="orderForm" novalidate>
                 <div class="order-row">
-                    <input type="text" id="name" name="name" placeholder="ФИО" required />
+                    <input type="text" id="name" name="name" placeholder="Ваше имя" required />
                     <input type="tel" id="phone" name="phone" placeholder="Телефон" class="small" required />
                 </div>
 
                 <div class="order-row">
-                    <input type="email" id="to" name="to" placeholder="Email" required />
+                    <input type="email" id="to" name="to" placeholder="Email для связи (куда отправляем)" required />
                 </div>
 
                 <div class="order-row">
-                    <textarea id="comment" name="comment" rows="4" placeholder="Комментарий"></textarea>
+                    <textarea id="comment" name="comment" rows="4" placeholder="Комментарий (опционально)"></textarea>
                 </div>
 
                 <div class="order-actions">
                     <button type="reset" class="btn-secondary">Очистить</button>
-                    <button type="submit" class="btn-primary">Заказать Квиз</button>
+                    <button type="submit" class="btn-primary">Отправить заказ</button>
                 </div>
             </form>
         </section>
@@ -678,5 +677,4 @@
     })();
     </script>
 </body>
-
 </html>
