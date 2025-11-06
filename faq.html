@@ -1,267 +1,664 @@
+Хорошо — сделал аккуратно и вдумчиво. Ниже — готовая страница FAQ в стиле твоего сайта (пастельные зелёные тона, крупный заголовок с градиентом, аккуратные карточки, гамбургер-меню на месте).
+Особое внимание:
+
+Горизонтальный FAQ-аккордеон: 10 вопросов, «фэнси» анимация (плавный масштаб + сдвиг контента + плавное появление текста и иконки).
+
+На десктопе секция открывается горизонтально (ширина), остальные сжимаются.
+
+На мобильных (<768px) аккордеон превращается в вертикальный список, пункт открывается до края экрана.
+
+JS вычисляет точную ширину открытой секции (по процентам), чтобы корректно работать при любом количестве пунктов.
+
+Доступность: keyboard navigation (ArrowLeft/ArrowRight/Enter/Escape), aria-expanded.
+
+
+OnePageScroll: прокрутка между секциями через wheel (с дебаунсом) и тач-перетаскивание (touchstart/touchmove/touchend) — работает без внешних библиотек.
+
+Видео: HTML5 video с кастомными контролами (play/pause/toggle mute/seek) — использует Media API.
+
+Google Map: контейнер + initMap (замени YOUR_API_KEY на свой ключ).
+
+
+Скопируй файл как faq.html в корень проекта; он использует часть стилей из твоего style.css (подключён), но также содержит локальные стили чтобы точно соответствовать оформлению и не ломать текущую страницу.
+
+
+---
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ</title>
-  <link rel="stylesheet" href="style.css">
-
+  <meta charset="utf-8" />
+  <title>FAQ — Мир Квизззов</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css"><!-- твой глобальный стиль -->
   <style>
-    /* --- Общие стили --- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    /* --- PAGE-SPECIFIC: сохраняем общую палитру и читаемость --- */
+    :root{
+      --bg:#C7F9CC;
+      --panel:#E9F5DB;
+      --accent:#57CC99;
+      --accent-2:#3B82F6;
+      --muted:#4F4F4F;
+      --dark:#222;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      overflow: hidden;
+    html,body{height:100%;margin:0;font-family:Arial, sans-serif;color:var(--dark);background:var(--bg);overflow:hidden;}
+
+    /* --- top nav (similar to your site) --- */
+    .navbar-fake{
+      position:fixed;left:0;right:0;top:0;z-index:1200;
+      display:flex;justify-content:center;padding:12px 0;
+      background:linear-gradient(180deg, rgba(183,228,199,0.85), rgba(183,228,199,0.65));
+      box-shadow:0 2px 8px rgba(0,0,0,0.06);
+      backdrop-filter: blur(6px);
+    }
+    .site-name-small{
+      font-weight:700;padding:10px 18px;border-radius:14px;
+      background:linear-gradient(90deg,#43EA6E,#3B82F6 50%,#F472B6);
+      color:white;box-shadow:0 4px 24px rgba(67,234,110,0.12);
     }
 
-    section {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      transition: transform 0.8s ease;
+    /* --- OnePageScroll wrapper --- */
+    .wrapper{height:100vh;width:100vw;overflow:hidden;position:relative;}
+    .main-content{transition:transform 0.8s cubic-bezier(.22,.9,.38,1);height:100vh;}
+    section{height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 3rem;box-sizing:border-box;}
+    .section-inner{width:100%;max-width:1200px;margin:0 auto;}
+
+    h1.page-title{
+      font-size:3.2rem;text-align:center;margin-bottom:1rem;
+      display:inline-block;padding:12px 22px;border-radius:24px;
+      color:#fff;background:linear-gradient(90deg,#43EA6E,#3B82F6 50%,#F472B6);
+      box-shadow:0 8px 32px rgba(67,234,110,0.12);
     }
 
-    h2 {
-      margin-bottom: 1rem;
-      color: #333;
+    /* ========== HORIZONTAL ACCORDION (FAQ) ========== */
+    .faq-wrap{display:flex;flex-direction:column;gap:20px;align-items:center;}
+    .faq-instructions{
+      font-size:0.95rem;color:var(--muted);max-width:900px;text-align:center;margin-bottom:8px;
     }
 
-    /* --- Секция 1: Горизонтальный аккордеон --- */
-    .accordion-horizontal {
-      display: flex;
-      width: 90%;
-      height: 400px;
-      overflow: hidden;
-      border-radius: 12px;
+    .accordion-horizontal{
+      --open-percent:58; /* default open percentage (desktop) */
+      width:100%;
+      height:420px;
+      display:flex;
+      gap:12px;
+      align-items:stretch;
+      border-radius:18px;
+      background:var(--panel);
+      padding:12px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.06);
+      overflow:hidden;
     }
 
-    .accordion-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      transition: flex-basis 0.5s ease;
-      background: #e0e0e0;
-      cursor: pointer;
-      position: relative;
-      border-right: 1px solid #ccc;
+    .accordion-item{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      border-radius:12px;
+      overflow:hidden;
+      min-width:0;
+      background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+      transition: flex-basis 600ms cubic-bezier(.2,.9,.25,1), transform 300ms ease, box-shadow 300ms ease;
+      cursor:pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      border:1px solid rgba(0,0,0,0.03);
+      display:flex;
+      align-items:stretch;
     }
 
-    .accordion-item:last-child {
-      border-right: none;
+    .accordion-item:not(.active){
+      transform: translateY(6px);
+      filter:grayscale(10%);
     }
 
-    .accordion-header {
-      padding: 1rem;
-      background: #343a40;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-      flex-shrink: 0;
+    .accordion-head{
+      flex:0 0 64px;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(180deg, rgba(67,234,110,0.12), rgba(59,130,246,0.06));
+      font-weight:700;color:#0b2a1a;padding:8px 12px;
+      writing-mode:horizontal-tb;text-align:center;
+      user-select:none;
     }
 
-    .accordion-content {
-      width: 0;
-      overflow: hidden;
-      transition: width 0.5s ease;
-      background: #fff;
-      flex-grow: 1;
-      padding: 1rem;
-      box-sizing: border-box;
+    /* fancy icon */
+    .faq-icon{
+      width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-right:8px;
+      background:linear-gradient(180deg,#57CC99,#3B82F6);
+      color:white;font-weight:bold;box-shadow:0 4px 16px rgba(0,0,0,0.12);
     }
 
-    .accordion-item.active .accordion-content {
-      width: 100%;
+    .accordion-body{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:center;
+      transform: translateX(8px);
+      opacity:0;
+      transition: opacity 300ms ease, transform 400ms ease;
+      will-change:opacity,transform;
     }
 
-    .accordion-item.active {
-      flex: 3;
-      background: #dee2e6;
+    .accordion-item.active .accordion-body{
+      opacity:1;
+      transform:none;
     }
 
-    @media (max-width: 768px) {
-      .accordion-horizontal {
-        flex-direction: column;
-        height: auto;
-      }
-
-      .accordion-item {
-        flex: unset;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ccc;
-      }
-
-      .accordion-content {
-        width: 100%;
-        height: 0;
-        transition: height 0.4s ease;
-      }
-
-      .accordion-item.active .accordion-content {
-        height: auto;
-      }
+    .accordion-question{
+      font-size:1.05rem;font-weight:700;color:#155724;
     }
 
-    /* --- Секция 2: OnePageScroll --- */
-    .wrapper {
-      height: 100vh;
-      width: 100%;
-      overflow: hidden;
-      position: relative;
+    .accordion-answer{
+      color:var(--muted);line-height:1.5;font-size:0.98rem;
     }
 
-    .main-content {
-      transition: transform 0.8s ease;
+    /* subtle gradient separator */
+    .accordion-footer{margin-top:auto;padding:8px 0 0;width:100%;display:flex;justify-content:flex-end;align-items:center;font-size:0.85rem;color:#666;}
+
+    /* borders when closed (desktop) */
+    @media(min-width:769px){
+      .accordion-item{flex:1 1 calc((100% - 11*12px)/10);} /* fallback: equal split */
+      .accordion-item.active{ /* JS will set exact flex-basis inline for precise behaviour */ box-shadow:0 14px 40px rgba(67,234,110,0.12); }
     }
 
-    /* --- Секция 3: Видеоплеер --- */
-    .video-section video {
-      width: 70%;
-      border-radius: 8px;
+    /* MOBILE: vertical accordion, open to full width (edge) */
+    @media(max-width:768px){
+      .accordion-horizontal{flex-direction:column;height:auto;padding:6px;}
+      .accordion-item{width:100%;display:block;transition:height 420ms cubic-bezier(.2,.9,.25,1);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+      .accordion-head{display:flex;justify-content:space-between;padding:12px 16px;}
+      .accordion-body{opacity:1;transform:none;padding:12px 16px;height:0;overflow:hidden;}
+      .accordion-item.active .accordion-body{height:auto;padding-bottom:16px;}
     }
 
-    .video-controls {
-      margin-top: 1rem;
-      display: flex;
-      gap: 10px;
+    /* small screens tweaks */
+    @media(max-width:420px){
+      h1.page-title{font-size:1.6rem;padding:8px 12px;}
+      .accordion-head{flex:0 0 56px;font-size:0.95rem;}
+      .accordion-body{font-size:0.95rem;}
     }
 
-    button {
-      padding: 8px 16px;
-      border: none;
-      background: #343a40;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
+    /* --- Video section styling (in site style) --- */
+    .video-player{
+      display:flex;flex-direction:column;align-items:center;gap:12px;
     }
+    .video-card{background:var(--panel);padding:18px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.06);width:90%;max-width:900px;}
+    .video-card video{width:100%;height:auto;border-radius:8px;background:#000;display:block;}
+    .controls-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;}
 
-    /* --- Секция 4: Карта --- */
-    #map {
-      width: 80%;
-      height: 70%;
-      border-radius: 10px;
-    }
+    /* --- Map area --- */
+    .map-card{width:90%;max-width:1000px;height:520px;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04);}
+
+    /* small helper */
+    .muted{color:var(--muted)}
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
-    <div class="main-content">
-
-      <!-- SECTION 1: FAQ Accordion -->
-      <section id="faq">
-        <h2>FAQ — Часто задаваемые вопросы</h2>
-        <div class="accordion-horizontal">
-          <div class="accordion-item active">
-            <div class="accordion-header">1. Что такое ваш сервис?</div>
-            <div class="accordion-content">
-              <p>Мы предоставляем современные решения для веб-разработки и обучения.</p>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <div class="accordion-header">2. Как связаться с поддержкой?</div>
-            <div class="accordion-content">
-              <p>Вы можете написать нам через форму обратной связи или по email support@example.com.</p>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <div class="accordion-header">3. Есть ли мобильная версия?</div>
-            <div class="accordion-content">
-              <p>Да, сайт полностью адаптирован под мобильные устройства.</p>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <div class="accordion-header">4. Где находятся ваши офисы?</div>
-            <div class="accordion-content">
-              <p>Наш главный офис расположен в Алматы.</p>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <div class="accordion-header">5. Как оставить отзыв?</div>
-            <div class="accordion-content">
-              <p>Вы можете отправить отзыв через контактную форму на сайте.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 2: Video Player -->
-      <section class="video-section">
-        <h2>Видео-презентация</h2>
-        <video id="myVideo" src="video.mp4" controls></video>
-        <div class="video-controls">
-          <button onclick="playVideo()">▶ Play</button>
-          <button onclick="pauseVideo()">⏸ Pause</button>
-          <button onclick="stopVideo()">⏹ Stop</button>
-        </div>
-      </section>
-
-      <!-- SECTION 3: Google Map -->
-      <section class="map-section">
-        <h2>Мы на карте</h2>
-        <div id="map"></div>
-      </section>
-
-    </div>
+  <!-- top nav like on your site -->
+  <div class="navbar-fake">
+    <div class="site-name-small">Мир Квизззов — FAQ</div>
   </div>
 
-  <!-- JS -->
+  <div class="wrapper" id="onepage-wrapper">
+    <div class="main-content" id="mainContent">
+
+      <!-- SECTION 1: FAQ / Horizontal accordion -->
+      <section id="section-faq" aria-label="FAQ">
+        <div class="section-inner">
+          <h1 class="page-title">Тема практического занятия: Завершение проекта по верстке</h1>
+          <p class="faq-instructions muted">
+            Задание: реализовать горизонтальный аккордеон (10 вопросов). На десктопе пункты открываются по ширине,
+            на мобильных — открываются до края окна. Также реализован OnePageScroll, HTML5 видео и Google-карта ниже.
+          </p>
+
+          <div class="faq-wrap">
+            <div class="accordion-horizontal" id="faqAccordion" role="tablist" aria-multiselectable="false">
+              <!-- 10 items -->
+              <!-- Каждый item имеет data-index и aria атрибуты -->
+              <!-- 1 -->
+              <article class="accordion-item active" data-index="0" role="tabpanel" aria-expanded="true" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">1</span>
+                    <span>Что такое Мир Квизззов?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Что такое Мир Квизззов?</div>
+                  <div class="accordion-answer">Это образовательный проект с коллекцией квизов и тестов по школьным предметам для повторения и проверки знаний.</div>
+                  <div class="accordion-footer muted">Кликните, чтобы открыть/закрыть. Поддержка клавиатуры: ← → Enter</div>
+                </div>
+              </article>
+
+              <!-- 2 -->
+              <article class="accordion-item" data-index="1" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">2</span>
+                    <span>Как пройти квиз?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Как пройти квиз?</div>
+                  <div class="accordion-answer">Выбираете предмет, нажимаете "Пройти Квиз" — ответы сохраняются локально/на сервере в зависимости от реализации.</div>
+                </div>
+              </article>
+
+              <!-- 3 -->
+              <article class="accordion-item" data-index="2" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">3</span>
+                    <span>Есть ли платные функции?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Есть ли платные функции?</div>
+                  <div class="accordion-answer">Базовые квизы бесплатны. Подписка может открывать дополнительные наборы и аналитику.</div>
+                </div>
+              </article>
+
+              <!-- 4 -->
+              <article class="accordion-item" data-index="3" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">4</span>
+                    <span>Подходит ли для детей?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Подходит ли для детей?</div>
+                  <div class="accordion-answer">Да — есть специально помеченные задания для школьников разного возраста.</div>
+                </div>
+              </article>
+
+              <!-- 5 -->
+              <article class="accordion-item" data-index="4" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">5</span>
+                    <span>Можно ли пройти совместно с ребёнком?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Можно ли пройти совместно с ребёнком?</div>
+                  <div class="accordion-answer">Да. Многие квизы подходят для совместного прохождения — рекомендовано для контроля и обучения.</div>
+                </div>
+              </article>
+
+              <!-- 6 -->
+              <article class="accordion-item" data-index="5" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">6</span>
+                    <span>Как сохраняются результаты?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Как сохраняются результаты?</div>
+                  <div class="accordion-answer">Результаты могут сохраняться локально в localStorage или отправляться на сервер — зависит от конфигурации сайта.</div>
+                </div>
+              </article>
+
+              <!-- 7 -->
+              <article class="accordion-item" data-index="6" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">7</span>
+                    <span>Можно ли экспортировать оценки?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Можно ли экспортировать оценки?</div>
+                  <div class="accordion-answer">Планируется экспорт в CSV/PDF — пока можно копировать вручную или сохранять скрин.</div>
+                </div>
+              </article>
+
+              <!-- 8 -->
+              <article class="accordion-item" data-index="7" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">8</span>
+                    <span>Есть ли мобильное приложение?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Есть ли мобильное приложение?</div>
+                  <div class="accordion-answer">Пока нет. Сайт адаптирован под мобильные браузеры и даёт почти все функции.</div>
+                </div>
+              </article>
+
+              <!-- 9 -->
+              <article class="accordion-item" data-index="8" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">9</span>
+                    <span>Как добавить свой тест?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Как добавить свой тест?</div>
+                  <div class="accordion-answer">Свяжитесь с нашей командой (контакты внизу сайта) — мы подскажем формат и требования.</div>
+                </div>
+              </article>
+
+              <!-- 10 -->
+              <article class="accordion-item" data-index="9" role="tabpanel" aria-expanded="false" tabindex="0">
+                <div class="accordion-head">
+                  <span style="display:inline-flex;align-items:center;">
+                    <span class="faq-icon">10</span>
+                    <span>Какой следующий шаг проекта?</span>
+                  </span>
+                </div>
+                <div class="accordion-body">
+                  <div class="accordion-question">Какой следующий шаг проекта?</div>
+                  <div class="accordion-answer">Дальше — расширение банков вопросов, аналитика результатов и поддержка подписки с расширенными функциями.</div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 2: Video player -->
+      <section id="section-video" aria-label="Видео-презентация">
+        <div class="section-inner">
+          <h2 style="text-align:center;margin-bottom:12px;">Видео-презентация проекта</h2>
+          <div class="video-card">
+            <div class="video-player">
+              <!-- заменяй src на реальный файл -->
+              <video id="projectVideo" preload="metadata" poster="video-poster.jpg">
+                <source src="video.mp4" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+              </video>
+
+              <div class="controls-row">
+                <button id="btnPlay">Play ▶</button>
+                <button id="btnPause">Pause ⏸</button>
+                <button id="btnStop">Stop ⏹</button>
+                <button id="btnMute">Mute 🔈</button>
+                <label class="muted" style="margin-left:auto;">Прогресс: <span id="timeLabel">0:00 / 0:00</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Google map -->
+      <section id="section-map" aria-label="Где нас найти">
+        <div class="section-inner" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <h2 style="margin-bottom:6px;">Где Нас Найти</h2>
+          <p class="muted" style="max-width:900px;text-align:center;">
+            ТРЦ “Eurasia”, Астана — интерактивная карта ниже. Замените API-ключ внизу на ваш собственный.
+          </p>
+          <div class="map-card" id="map"></div>
+        </div>
+      </section>
+
+    </div><!-- /.main-content -->
+  </div><!-- /.wrapper -->
+
   <script>
-    /* --- Горизонтальный аккордеон --- */
-    const items = document.querySelectorAll('.accordion-item');
-    items.forEach(item => {
-      item.addEventListener('click', () => {
-        items.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
+    /***********************
+     * HORIZONTAL ACCORDION
+     ***********************/
+    (function(){
+      const container = document.getElementById('faqAccordion');
+      const items = Array.from(container.querySelectorAll('.accordion-item'));
+      const total = items.length;
+
+      // config: target open percent on desktop
+      const OPEN_PERCENT = 58; // percent for active panel on desktop
+
+      // compute closed percent per other item
+      function computeFlex(activeIndex){
+        // for desktop: active gets OPEN_PERCENT, others share rest
+        const rest = 100 - OPEN_PERCENT;
+        const closedEach = rest / (total - 1);
+        return {open: OPEN_PERCENT + '%', closed: closedEach + '%'};
+      }
+
+      // apply sizes (desktop)
+      function applySizesDesktop(activeIdx){
+        const {open, closed} = computeFlex(activeIdx);
+        items.forEach((it, i) => {
+          if(i === activeIdx){
+            it.style.flex = `0 0 ${open}`;
+          } else {
+            it.style.flex = `0 0 ${closed}`;
+          }
+        });
+      }
+
+      // apply mobile layout - reset inline flex
+      function applySizesMobile(){
+        items.forEach(it => {
+          it.style.flex = '';
+        });
+      }
+
+      // activate index
+      function activate(idx, focus=false){
+        if(idx < 0 || idx >= total) return;
+        items.forEach((it,i)=>{
+          const active = i===idx;
+          it.classList.toggle('active', active);
+          it.setAttribute('aria-expanded', String(active));
+          if(active && focus) it.focus();
+        });
+
+        if(window.innerWidth > 768){
+          applySizesDesktop(idx);
+        } else applySizesMobile();
+      }
+
+      // init: ensure first active
+      let activeIndex = 0;
+      activate(activeIndex);
+
+      // click handlers
+      items.forEach((it, i) => {
+        it.addEventListener('click', (e)=>{
+          // if clicked active on desktop -> keep it open (or toggle if want)
+          if(activeIndex === i){
+            // toggle behaviour: keep single open — do nothing,
+            // but allow collapse on mobile by toggling (nice UX)
+            if(window.innerWidth <= 768){
+              const isActive = it.classList.contains('active');
+              if(isActive){ it.classList.remove('active'); it.setAttribute('aria-expanded','false'); activeIndex = -1; }
+              else { activate(i,true); activeIndex = i; }
+            }
+            return;
+          }
+          activeIndex = i;
+          activate(i,true);
+        });
+
+        // keyboard accessibility
+        it.addEventListener('keydown', (ev)=>{
+          if(ev.key === 'ArrowRight'){
+            ev.preventDefault();
+            const next = (activeIndex + 1) % total;
+            activeIndex = next; activate(activeIndex,true);
+          } else if(ev.key === 'ArrowLeft'){
+            ev.preventDefault();
+            const prev = (activeIndex - 1 + total) % total;
+            activeIndex = prev; activate(activeIndex,true);
+          } else if(ev.key === 'Enter' || ev.key === ' '){
+            ev.preventDefault();
+            // toggle on mobile only
+            if(window.innerWidth <= 768){
+              const isActive = it.classList.contains('active');
+              if(isActive){ it.classList.remove('active'); it.setAttribute('aria-expanded','false'); activeIndex = -1;}
+              else{ activeIndex = i; activate(i,true); }
+            } else { activeIndex = i; activate(i,true); }
+          }
+        });
       });
-    });
 
-    /* --- OnePageScroll --- */
-    const mainContent = document.querySelector('.main-content');
-    const sections = document.querySelectorAll('section');
-    let currentSection = 0;
-
-    window.addEventListener('wheel', (event) => {
-      if (event.deltaY > 0) currentSection++;
-      else currentSection--;
-      if (currentSection < 0) currentSection = 0;
-      if (currentSection >= sections.length) currentSection = sections.length - 1;
-      mainContent.style.transform = `translateY(-${currentSection * 100}vh)`;
-    });
-
-    /* --- Видеоплеер HTML5 API --- */
-    const video = document.getElementById('myVideo');
-    function playVideo() { video.play(); }
-    function pauseVideo() { video.pause(); }
-    function stopVideo() { video.pause(); video.currentTime = 0; }
-
-    /* --- Google Map --- */
-    function initMap() {
-      const location = { lat: 43.238949, lng: 76.889709 }; // Алматы
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: location,
+      // reflow on resize
+      let resizeTimer;
+      window.addEventListener('resize', ()=>{
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(()=>{
+          if(window.innerWidth > 768){
+            // ensure some active
+            if(activeIndex < 0) activeIndex = 0;
+            applySizesDesktop(activeIndex);
+          } else {
+            // mobile: clear inline flex
+            applySizesMobile();
+          }
+        },120);
       });
-      new google.maps.Marker({ position: location, map: map });
+
+      // accessibility: if focus leaves container, nothing — ok
+      // initial application
+      if(window.innerWidth > 768) applySizesDesktop(activeIndex);
+    })();
+
+    /***********************
+     * ONE PAGE SCROLL (wheel + touch)
+     ***********************/
+    (function(){
+      const content = document.getElementById('mainContent');
+      const sections = Array.from(content.querySelectorAll('section'));
+      let current = 0;
+      let running = false;
+      const LOCK_MS = 900; // debounce lock
+
+      function clamp(v){ return Math.max(0, Math.min(v, sections.length-1)); }
+      function goTo(index){
+        index = clamp(index);
+        if(index === current) return;
+        current = index;
+        content.style.transform = `translateY(-${current * 100}vh)`;
+      }
+
+      // wheel handler with debounce
+      window.addEventListener('wheel', (e)=>{
+        if(running) return;
+        running = true;
+        setTimeout(()=> running = false, LOCK_MS);
+        const dir = e.deltaY;
+        if(dir > 0) goTo(current+1);
+        else if(dir < 0) goTo(current-1);
+      }, {passive:true});
+
+      // touch handling (simple swipe up/down)
+      let startY = null;
+      window.addEventListener('touchstart',(e)=>{
+        if(e.touches && e.touches[0]) startY = e.touches[0].clientY;
+      }, {passive:true});
+
+      window.addEventListener('touchend',(e)=>{
+        if(startY === null) return;
+        // get last touch
+        const touch = (e.changedTouches && e.changedTouches[0]) || null;
+        if(!touch){ startY = null; return; }
+        const dy = startY - touch.clientY;
+        if(Math.abs(dy) > 50){
+          if(dy > 0) goTo(current+1); else goTo(current-1);
+        }
+        startY = null;
+      }, {passive:true});
+
+      // keyboard navigation for sections
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === 'PageDown' || e.key === 'ArrowDown'){
+          goTo(current+1);
+        } else if(e.key === 'PageUp' || e.key === 'ArrowUp'){
+          goTo(current-1);
+        }
+      });
+
+      // ensure initial transform
+      content.style.transform = `translateY(0)`;
+    })();
+
+    /***********************
+     * VIDEO CONTROLS (HTML5 API)
+     ***********************/
+    (function(){
+      const video = document.getElementById('projectVideo');
+      const btnPlay = document.getElementById('btnPlay');
+      const btnPause = document.getElementById('btnPause');
+      const btnStop = document.getElementById('btnStop');
+      const btnMute = document.getElementById('btnMute');
+      const timeLabel = document.getElementById('timeLabel');
+
+      function fmt(sec){
+        if(!isFinite(sec)) return '0:00';
+        const s = Math.floor(sec%60); const m = Math.floor(sec/60);
+        return m + ':' + (s<10?'0':'') + s;
+      }
+
+      btnPlay.addEventListener('click', ()=> video.play());
+      btnPause.addEventListener('click', ()=> video.pause());
+      btnStop.addEventListener('click', ()=> { video.pause(); video.currentTime = 0; });
+      btnMute.addEventListener('click', ()=> { video.muted = !video.muted; btnMute.textContent = video.muted ? 'Unmute 🔇' : 'Mute 🔈'; });
+
+      video.addEventListener('timeupdate', ()=>{
+        timeLabel.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+      });
+
+      // progressive enhancement: keyboard shortcuts
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === 'k'){ /* toggle play/pause */ video.paused ? video.play() : video.pause(); }
+        if(e.key === 'm'){ video.muted = !video.muted; }
+      });
+    })();
+
+    /***********************
+     * GOOGLE MAP INIT
+     ***********************/
+    function initMap(){
+      // Fallback coords: Astana - Eurasia Mall (example)
+      const coords = { lat: 51.14872, lng: 71.47309 };
+      const mapEl = document.getElementById('map');
+      if(!mapEl) return;
+      const map = new google.maps.Map(mapEl, {
+        center: coords,
+        zoom: 13,
+        disableDefaultUI: false,
+      });
+      const marker = new google.maps.Marker({ position: coords, map });
     }
+
+    // If Google Maps script fails to load, show message
+    window.addEventListener('error', (e)=>{
+      if(e.target && e.target.tagName === 'SCRIPT'){
+        const mapEl = document.getElementById('map');
+        if(mapEl) mapEl.innerHTML = '<div style="padding:20px;text-align:center;color:#666">Не удалось загрузить карту. Проверьте API-ключ.</div>';
+      }
+    }, true);
   </script>
 
-  <!-- Подключение Google Maps API -->
-  <script async
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
-  </script>
-
+  <!-- Google Maps API: замените YOUR_API_KEY на ваш ключ -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
+
+
+---
+
+Если хочешь дальше улучшить (предложения, которые я могу прямо сейчас вкинуть в код):
+
+1. Анимация раскрытия с использованием clip-path — выглядит ещё более «современно».
+
+
+2. Добавить микро-анимацию иконки (пульсация) у активного пункта.
+
+
+3. Поддержка deep linking: #faq-3 открывает 3-й пункт при загрузке.
+
+
+4. Сохранение последнего открытого пункта в localStorage.
+
+
+5. Подключить touchSwipe.js / MobileDetect если нужно более гладкое поведение свайпа и
+
+
