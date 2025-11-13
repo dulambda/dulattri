@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация пользователей</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    form { display: flex; gap: 10px; flex-wrap: wrap; }
+    input, button { padding: 10px; }
+    table { margin-top: 20px; border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    @media (max-width: 600px) {
+      form { flex-direction: column; }
+      input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Регистрация пользователей</h1>
+  <form id="userForm">
+    <input id="name" placeholder="Имя" required>
+    <input id="email" placeholder="Email" required>
+    <input id="age" type="number" placeholder="Возраст" required>
+    <button type="submit">Добавить</button>
+  </form>
+  <button onclick="exportToExcel()">Экспортировать в Excel</button>
+
+  <table id="userTable">
+    <thead><tr><th>Имя</th><th>Email</th><th>Возраст</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('userForm');
+    const tableBody = document.querySelector('#userTable tbody');
+
+    // Загрузка сохранённых данных
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    render();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = {
+        name: name.value,
+        email: email.value,
+        age: age.value
+      };
+      users.push(user);
+      localStorage.setItem('users', JSON.stringify(users));
+      render();
+      form.reset();
+    });
+
+    function render() {
+      tableBody.innerHTML = '';
+      users.forEach(u => {
+        const row = `<tr><td>${u.name}</td><td>${u.email}</td><td>${u.age}</td></tr>`;
+        tableBody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    function exportToExcel() {
+      const wb = XLSX.utils.table_to_book(document.getElementById('userTable'));
+      XLSX.writeFile(wb, 'users.xlsx');
+    }
+  </script>
+</body>
+</html>
