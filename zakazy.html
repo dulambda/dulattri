@@ -5,6 +5,7 @@
     <title>Заказы — Мир Квизззов</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
     /* ====== Доп. стили, чтобы страница выглядела и работала автономно (можно скопировать в style.css) ====== */
 
@@ -439,29 +440,66 @@
             </div>
         </section>
 
-        <!-- Секция: Заказ (форма и кнопка отправки) -->
+        <!-- Секция: Регистрация пользователей и Заказ -->
         <section id="order" class="order-section" style="margin-top:36px;">
-            <div class="section-title">Заказ</div>
+            <div class="section-title">Заказы</div>
 
-            <form id="orderForm" novalidate>
-                <div class="order-row">
-                    <input type="text" id="name" name="name" placeholder="Ваше имя" required />
-                    <input type="tel" id="phone" name="phone" placeholder="Телефон" class="small" required />
-                </div>
+            <!-- Подсекция: Регистрация пользователя -->
+            <div style="background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                <h3 style="color: #2f7f4a; margin-top: 0;">Регистрация пользователя</h3>
+                <form id="userForm" novalidate>
+                    <div class="order-row">
+                        <input type="text" id="regName" name="regName" placeholder="Ваше имя" required />
+                        <input type="email" id="regEmail" name="regEmail" placeholder="Email" required />
+                        <input type="number" id="regAge" name="regAge" placeholder="Возраст" required class="small" />
+                    </div>
+                    <div class="order-actions">
+                        <button type="submit" class="btn-primary">Добавить пользователя</button>
+                    </div>
+                </form>
+            </div>
 
-                <div class="order-row">
-                    <input type="email" id="to" name="to" placeholder="Email для связи (куда отправляем)" required />
+            <!-- Таблица зарегистрированных пользователей -->
+            <div style="background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); overflow-x: auto;">
+                <h3 style="color: #2f7f4a; margin-top: 0;">Зарегистрированные пользователи</h3>
+                <table id="userTable" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #E9F5DB;">
+                            <th style="border: 1px solid #bfcfc0; padding: 12px; text-align: left; color: #2f7f4a; font-weight: bold;">Имя</th>
+                            <th style="border: 1px solid #bfcfc0; padding: 12px; text-align: left; color: #2f7f4a; font-weight: bold;">Email</th>
+                            <th style="border: 1px solid #bfcfc0; padding: 12px; text-align: center; color: #2f7f4a; font-weight: bold;">Возраст</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="order-actions" style="margin-top: 12px;">
+                    <button class="btn-secondary" onclick="exportToExcel()">Экспортировать в Excel</button>
                 </div>
+            </div>
 
-                <div class="order-row">
-                    <textarea id="comment" name="comment" rows="4" placeholder="Комментарий (опционально)"></textarea>
-                </div>
+            <!-- Подсекция: Форма заказа -->
+            <div style="background: #E9F5DB; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                <h3 style="color: #2f7f4a; margin-top: 0;">Оформление заказа</h3>
+                <form id="orderForm" novalidate>
+                    <div class="order-row">
+                        <input type="text" id="orderName" name="orderName" placeholder="Ваше имя" required />
+                        <input type="tel" id="phone" name="phone" placeholder="Телефон" class="small" required />
+                    </div>
 
-                <div class="order-actions">
-                    <button type="reset" class="btn-secondary">Очистить</button>
-                    <button type="submit" class="btn-primary">Отправить заказ</button>
-                </div>
-            </form>
+                    <div class="order-row">
+                        <input type="email" id="to" name="to" placeholder="Email для связи (куда отправляем)" required />
+                    </div>
+
+                    <div class="order-row">
+                        <textarea id="comment" name="comment" rows="4" placeholder="Комментарий (опционально)"></textarea>
+                    </div>
+
+                    <div class="order-actions">
+                        <button type="reset" class="btn-secondary">Очистить</button>
+                        <button type="submit" class="btn-primary">Отправить заказ</button>
+                    </div>
+                </form>
+            </div>
         </section>
     </main>
 
@@ -619,6 +657,78 @@
         if(e.target === modalOverlay) hideModal();
     });
 
+    // ======= User Registration Form (from example.html) ========
+    (function(){
+        const form = document.getElementById('userForm');
+        const tableBody = document.querySelector('#userTable tbody');
+        if(!form) return;
+
+        // Load saved users from localStorage
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        renderUserTable();
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const age = document.getElementById('regAge').value.trim();
+
+            // Basic validation
+            if(!name) { showModal('Ошибка', 'Пожалуйста, введите имя.'); return; }
+            if(!email) { showModal('Ошибка', 'Пожалуйста, введите email.'); return; }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailRegex.test(email)) { showModal('Ошибка', 'Введите корректный email.'); return; }
+            if(!age || age < 1 || age > 150) { showModal('Ошибка', 'Пожалуйста, введите корректный возраст.'); return; }
+
+            // Add user
+            const user = { name, email, age };
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUserTable();
+            showModal('Успех', `Пользователь "${name}" успешно добавлен!`);
+            form.reset();
+        });
+
+        function renderUserTable() {
+            tableBody.innerHTML = '';
+            users.forEach(u => {
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #bfcfc0';
+                row.innerHTML = `
+                    <td style="border: 1px solid #bfcfc0; padding: 10px; text-align: left;">${u.name}</td>
+                    <td style="border: 1px solid #bfcfc0; padding: 10px; text-align: left;">${u.email}</td>
+                    <td style="border: 1px solid #bfcfc0; padding: 10px; text-align: center;">${u.age}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    })();
+
+    // ======= Excel Export ========
+    function exportToExcel() {
+        const userTable = document.getElementById('userTable');
+        if(!userTable) {
+            showModal('Ошибка', 'Таблица пользователей не найдена.');
+            return;
+        }
+        
+        const tbody = userTable.querySelector('tbody');
+        if(!tbody || tbody.children.length === 0) {
+            showModal('Информация', 'Нет данных для экспорта. Пожалуйста, добавьте пользователей.');
+            return;
+        }
+        
+        try {
+            const wb = XLSX.utils.table_to_book(userTable);
+            XLSX.writeFile(wb, 'users.xlsx');
+            showModal('Успех', 'Файл успешно экспортирован как users.xlsx');
+        } catch(err) {
+            console.error('Export error:', err);
+            showModal('Ошибка', 'Произошла ошибка при экспорте: ' + err.message);
+        }
+    }
+
     // ======= Order form: validation + AJAX POST (fetch) ========
     (function(){
         const form = document.getElementById('orderForm');
@@ -627,7 +737,7 @@
         form.addEventListener('submit', function(e){
             e.preventDefault();
 
-            const name = document.getElementById('name').value.trim();
+            const name = document.getElementById('orderName').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const to = document.getElementById('to').value.trim();
             const comment = document.getElementById('comment').value.trim();
