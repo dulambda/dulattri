@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Главная страница</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7f8fa;
+      color: #333;
+    }
+
+    header {
+      background: #2b3a67;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav {
+      background: #405089;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 12px 18px;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+
+    nav a:hover {
+      background: #5467b3;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 50px;
+    }
+
+    h2 {
+      border-left: 5px solid #2b3a67;
+      padding-left: 10px;
+      color: #2b3a67;
+    }
+
+    /* === Секция Заказ === */
+    #orderSection {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    input, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      cursor: pointer;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    @media (max-width: 600px) {
+      form { flex-direction: column; }
+      input, button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Мой сайт</h1>
+  </header>
+
+  <nav>
+    <a href="#about">О нас</a>
+    <a href="#services">Услуги</a>
+    <a href="#orderSection">Заказ</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+
+  <main>
+    <section id="about">
+      <h2>О нас</h2>
+      <p>Добро пожаловать на наш сайт! Здесь вы можете узнать больше о нас и сделать заказ прямо онлайн.</p>
+    </section>
+
+    <section id="services">
+      <h2>Наши услуги</h2>
+      <p>Мы предлагаем качественные решения под ключ и индивидуальный подход к каждому клиенту.</p>
+    </section>
+
+    <!-- ==== Обновлённая секция ЗАКАЗ ==== -->
+    <section id="orderSection">
+      <h2>Заказ</h2>
+
+      <form id="orderForm">
+        <input id="product" placeholder="Название товара" required>
+        <input id="quantity" type="number" placeholder="Количество" min="1" required>
+        <input id="price" type="number" placeholder="Цена (₸)" min="0" step="0.01" required>
+        <input id="customer" placeholder="Имя заказчика" required>
+        <button type="submit">Добавить заказ</button>
+      </form>
+
+      <div style="text-align:center;">
+        <button onclick="exportToExcel()">Экспортировать в Excel</button>
+        <button onclick="clearOrders()" style="background:#d9534f;">Очистить всё</button>
+      </div>
+
+      <table id="orderTable">
+        <thead>
+          <tr>
+            <th>Название товара</th>
+            <th>Количество</th>
+            <th>Цена (₸)</th>
+            <th>Сумма (₸)</th>
+            <th>Заказчик</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+    <!-- ==== Конец секции Заказ ==== -->
+
+    <section id="contacts">
+      <h2>Контакты</h2>
+      <p>Email: example@mail.com<br>Телефон: +7 777 000 0000</p>
+    </section>
+  </main>
+
+  <footer style="background:#2b3a67; color:white; text-align:center; padding:15px;">
+    &copy; 2025 Мой сайт. Все права защищены.
+  </footer>
+
+  <script>
+    const form = document.getElementById('orderForm');
+    const tableBody = document.querySelector('#orderTable tbody');
+
+    // Загрузка заказов из localStorage
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    render();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const product = document.getElementById('product').value.trim();
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const price = parseFloat(document.getElementById('price').value);
+      const customer = document.getElementById('customer').value.trim();
+
+      if (!product || !quantity || !price || !customer) return;
+
+      const total = quantity * price;
+      const order = { product, quantity, price, total, customer };
+
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      render();
+      form.reset();
+    });
+
+    function render() {
+      tableBody.innerHTML = '';
+      orders.forEach(o => {
+        const row = `
+          <tr>
+            <td>${o.product}</td>
+            <td>${o.quantity}</td>
+            <td>${o.price.toFixed(2)}</td>
+            <td>${o.total.toFixed(2)}</td>
+            <td>${o.customer}</td>
+          </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    function exportToExcel() {
+      const wb = XLSX.utils.table_to_book(document.getElementById('orderTable'));
+      XLSX.writeFile(wb, 'orders.xlsx');
+    }
+
+    function clearOrders() {
+      if (confirm('Удалить все заказы?')) {
+        localStorage.removeItem('orders');
+        orders = [];
+        render();
+      }
+    }
+  </script>
+</body>
+</html>
